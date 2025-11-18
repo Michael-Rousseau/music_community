@@ -74,7 +74,6 @@ if (isset($_GET['delete_id'])) {
     exit();
 }
 
-// 4. --- RÉCUPÉRATION DES DONNÉES (MES INFOS & MES MUSIQUES) ---
 
 // Récupérer les musiques de l'utilisateur
 $stmt = $pdo->prepare("SELECT * FROM musics WHERE user_id = ? ORDER BY created_at DESC");
@@ -90,32 +89,27 @@ $my_musics = $stmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de bord - MusicShare</title>
     <style>
-        /* CSS inspiré du tableau blanc : Simple et modulaire */
+
         body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; margin: 0; padding: 0; }
         
-        /* Header */
         nav { background: #333; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         nav a { color: white; text-decoration: none; margin-left: 15px; font-weight: bold; }
         nav a:hover { color: #ddd; }
         
         .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
         
-        /* Cartes générales */
         .card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 2rem; }
         h2 { margin-top: 0; color: #333; border-bottom: 2px solid #f4f4f9; padding-bottom: 10px; }
 
-        /* Section Profil (Gauche) */
         .profile-header { text-align: center; margin-bottom: 20px; }
         .avatar-circle { width: 80px; height: 80px; background-color: #007bff; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 10px; font-weight: bold; }
         
-        /* Formulaire Ajout (Gauche) - Comme sur le tableau blanc */
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; }
         input[type="text"], textarea, select, input[type="file"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
         button.btn-upload { width: 100%; background-color: #28a745; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }
         button.btn-upload:hover { background-color: #218838; }
 
-        /* Liste des Musiques (Droite) - Comme sur le tableau blanc */
         .music-item { display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid #007bff; }
         .music-info h3 { margin: 0; font-size: 1.1rem; }
         .music-info span { font-size: 0.85rem; color: #666; }
