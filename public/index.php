@@ -1,39 +1,84 @@
 <?php
 session_start();
+require_once '../config/db.php';
 
-// Si connecté, on redirige vers le tableau de bord
-if (isset($_SESSION['user_id'])) {
-    header("Location: dashboard.php"); 
-    exit();
+// Recherche
+$search = isset($_GET['q']) ? trim($_GET['q']) : '';
+$sql = "SELECT m.*, u.username, u.avatar FROM musics m 
+        JOIN users u ON m.user_id = u.id 
+        WHERE m.visibility = 'public'";
+
+if ($search) {
+    $sql .= " AND m.title LIKE :search";
 }
+$sql .= " ORDER BY m.created_at DESC";
+
+$stmt = $pdo->prepare($sql);
+if ($search) $stmt->bindValue(':search', "%$search%");
+$stmt->execute();
+$musics = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue - MusicShare</title>
+    <title>MusicShare - Accueil</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
-        h1 { color: #333; margin-bottom: 10px; }
-        p { color: #666; margin-bottom: 30px; }
-        .btn-container { display: flex; flex-direction: column; gap: 15px; }
-        .btn { display: block; padding: 12px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background 0.3s; }
-        .btn-primary { background-color: #007bff; color: white; }
-        .btn-primary:hover { background-color: #0056b3; }
-        .btn-secondary { background-color: #6c757d; color: white; }
-        .btn-secondary:hover { background-color: #545b62; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f9; margin: 0; }
+        nav { background: #333; padding: 1rem; display: flex; justify-content: space-between; align-items: center; color: white; }
+        nav a { color: white; text-decoration: none; margin-left: 15px; font-weight: bold; }
+        .hero { text-align: center; padding: 40px 20px; background: white; margin-bottom: 20px; }
+        .search-bar input { padding: 10px; width: 300px; border: 1px solid #ddd; border-radius: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .card-img { height: 150px; background: #eee; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 3rem; }
+        .card-body { padding: 15px; }
+        .card-title { margin: 0 0 10px; font-size: 1.1rem; color: #333; }
+        .card-user { font-size: 0.9rem; color: #666; display: flex; align-items: center; gap: 5px; }
+        .btn-play { display: block; text-align: center; background: #007bff; color: white; padding: 8px; border-radius: 5px; text-decoration: none; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎵 MusicShare</h1>
-        <p>Rejoignez la communauté, partagez vos MP3 et découvrez de nouveaux talents.</p>
-        <div class="btn-container">
-            <a href="inscription.php" class="btn btn-primary">Créer un compte</a>
-            <a href="connexion.php" class="btn btn-secondary">Se connecter</a>
-        </div>
+
+<nav>
+    <div style="font-size: 1.5rem;">🎵 MusicShare</div>
+    <div>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="dashboard.php">Mon Espace</a>
+            <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                <a href="admin.php" style="color:#ffc107;">Admin</a>
+            <?php endif; ?>
+            <a href="logout.php" style="color:#ff6b6b;">Déconnexion</a>
+        <?php else: ?>
+            <a href="connexion.php">Se connecter</a>
+            <a href="inscription.php" style="background: #007bff; padding: 8px 15px; border-radius: 20px;">S'inscrire</a>
+        <?php endif; ?>
     </div>
+</nav>
+
+<div class="hero">
+    <h1>Découvrez les talents de demain</h1>
+    <form class="search-bar" method="GET">
+        <input type="text" name="q" placeholder="Rechercher un titre..." value="<?php echo htmlspecialchars($search); ?>">
+    </form>
+</div>
+
+<div class="grid">
+    <?php foreach ($musics as $m): ?>
+        <div class="card">
+            <div class="card-img">💿</div>
+            <div class="card-body">
+                <h3 class="card-title"><?php echo htmlspecialchars($m['title']); ?></h3>
+                <div class="card-user">
+                    <div style="width:20px;height:20px;background:#ccc;border-radius:50%;"></div>
+                    <?php echo htmlspecialchars($m['username']); ?>
+                </div>
+                <a href="music.php?id=<?php echo $m['id']; ?>" class="btn-play">Écouter ▶</a>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
 </body>
 </html>
