@@ -85,14 +85,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Inscription</title>
+    <title>Inscription - Music Community</title>
     <style>
-        body { font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f4f4f9; margin: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 90vh; background-color: #f4f4f9; margin: 0; }
         .container { background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        input { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .message { padding: 10px; margin-bottom: 20px; text-align: center; border-radius: 5px; }
-        .success { background: #d4edda; color: #155724; } .error { background: #f8d7da; color: #721c24; }
-        .info { text-align: center; margin-top: 15px; font-size: 0.9em; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        form div { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; }
+        button:hover { background-color: #218838; }
+        .message { padding: 10px; margin-bottom: 20px; border-radius: 5px; text-align: center; font-size: 0.9rem; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { margin-top: 20px; text-align: center; font-size: 0.9em; color: #666; }
+        .info a { color: #007bff; text-decoration: none; }
     </style>
 </head>
+<body>
+    <div class="container">
+        <h2>Créer un compte</h2>
+
+        <?php if (!empty($message)): ?>
+            <div class="message <?php echo (strpos($message, 'Succès') !== false) ? 'success' : 'error'; ?>">
+                <?php echo htmlspecialchars($message); ?>
+            </div>
+        <?php endif; ?>
+
+        <form action="inscription.php" method="POST">
+            <div>
+                <label for="username">Nom d'utilisateur :</label>
+                <input type="text" id="username" name="username" required placeholder="Ex: DJ_Mike">
+            </div>
+            <div>
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email" required placeholder="exemple@gmail.com">
+            </div>
+            <div>
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div>
+                <button type="submit">S'inscrire</button>
+            </div>
+        </form>
+        
+        <div class="info">
+            <p>Déjà membre ? <a href="connexion.php">Connectez-vous</a></p>
+        </div>
+    </div>
+</body>
+</html>
