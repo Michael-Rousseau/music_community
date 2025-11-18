@@ -1,83 +1,67 @@
 <?php
 // 1. --- DÉMARRER LA SESSION ---
-// Doit être la toute première chose sur la page
 session_start();
 
-// 2. --- CONFIGURATION ---
-$db_host = 'localhost';
-$db_nom = 'users';
-$db_user = 'root';
-$db_pass = 'Collector10';
-$charset = 'utf8mb4';
+// 2. --- INCLUSION DE LA CONNEXION BDD ---
+// On remonte d'un dossier (..) pour aller chercher config/db.php
+require_once '../config/db.php';
 
 // 3. --- INITIALISATION ---
 $message = '';
 
-// 4. --- TRAITEMENT DU FORMULAIRE DE CONNEXION ---
+// 4. --- TRAITEMENT DU FORMULAIRE ---
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Vérifier si les champs sont remplis
-    if (empty($_POST['mail']) || empty($_POST['mdp'])) {
+    // On vérifie 'email' car j'ai corrigé le name dans le HTML plus bas
+    if (empty($_POST['email']) || empty($_POST['password'])) {
         $message = 'Erreur : Email et mot de passe requis.';
     } else {
         
-        $mail_utilisateur = trim($_POST['mail']);
-        $mdp_clair = $_POST['mdp'];
-
-        // --- 5. CONNEXION BDD (PDO) ---
-        $dsn = "mysql:host=$db_host;dbname=$db_nom;charset=$charset";
-        $options = [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES   => false,
-        ];
+        $email_posted = trim($_POST['email']);
+        $password_posted = $_POST['password'];
 
         try {
-            $pdo = new PDO($dsn, $db_user, $db_pass, $options);
+            // 5. RECHERCHER L'UTILISATEUR
+            // Correction : Table 'users' (pas useres)
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+            $stmt->execute([$email_posted]);
+            $user = $stmt->fetch(); 
 
-            // --- 6. RECHERCHER L'UTILISATEUR PAR EMAIL ---
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE mail = ?");
-            $stmt->execute([$mail_utilisateur]);
-            $user = $stmt->fetch(); // Récupère l'utilisateur ou 'false'
-
-            // --- 7. VÉRIFICATIONS (Utilisateur, Mot de passe, Token) ---
-
-            // Étape 1: L'utilisateur existe-t-il ?
+            // 6. VÉRIFICATIONS
             if ($user) {
                 
-                // Étape 2: Le mot de passe est-il correct ?
-                if (password_verify($mdp_clair, $user['mdp'])) {
+                // Vérification du mot de passe (La colonne BDD s'appelle 'password')
+                if (password_verify($password_posted, $user['password'])) {
 
-                    // Étape 3: Le compte est-il VÉRIFIÉ ? (token est NULL)
-                    if ($user['token'] == NULL) {
+                    // Vérification du Token (Si NULL, c'est que le compte est validé)
+                    if ($user['token'] === NULL) {
                         
-                        // --- CONNEXION RÉUSSIE ---
-                        session_regenerate_id(true); // Sécurité anti-fixation
+                        // --- SUCCÈS ---
+                        session_regenerate_id(true);
                         
-                        // Stocker les infos de l'utilisateur dans la session
+                        // On stocke les infos disponibles dans ta nouvelle table
                         $_SESSION['user_id'] = $user['id'];
-                        $_SESSION['user_nom'] = $user['nom'];
-                        $_SESSION['user_prenom'] = $user['prenom'];
+                        $_SESSION['user_name'] = $user['username']; // Ta table a 'username', pas 'nom'/'prenom'
+                        $_SESSION['user_role'] = $user['role'];
                         
-                        // Rediriger vers une page membre (ex: dashboard.php)
-                        header("Location: dashboard.php"); // !! Changez 'dashboard.php' si besoin
-                        exit; // Toujours 'exit' après une redirection
+                        // Redirection
+                        header("Location: index.php"); // Ou dashboard.php
+                        exit;
 
                     } else {
-                        // Mot de passe correct, MAIS token n'est pas NULL
-                        $message = 'Erreur : Votre compte n\'est pas encore vérifié. Veuillez consulter l\'email que nous vous avons envoyé.';
+                        $message = 'Erreur : Votre compte n\'est pas encore validé. Vérifiez vos emails.';
                     }
                 } else {
-                    // Mot de passe incorrect
                     $message = 'Erreur : Email ou mot de passe incorrect.';
                 }
             } else {
-                // Utilisateur non trouvé
                 $message = 'Erreur : Email ou mot de passe incorrect.';
             }
 
-        } catch (\PDOException $e) {
-            $message = 'Erreur de base de données : ' . $e->getMessage();
+        } catch (PDOException $e) {
+            // En production, évite d'afficher l'erreur brute SQL
+            $message = 'Erreur technique lors de la connexion.';
+            /* // error_log($e->getMessage()); // Pour toi dans les logs serveur */
         }
     }
 }
@@ -88,21 +72,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Connexion</title>
+    <title>Connexion - Music Community</title>
     <style>
-        /* (Même style que votre page d'inscription pour la cohérence) */
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: grid; place-items: center; min-height: 90vh; background-color: #f4f4f4; }
-        .container { background: #fff; border: 1px solid #ccc; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h2 { text-align: center; margin-top: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 90vh; background-color: #f4f4f9; margin: 0; }
+        .container { background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
         form div { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], input[type="email"], input[type="password"] { width: 300px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; }
         button:hover { background-color: #0056b3; }
-        .message { padding: 10px; margin-bottom: 15px; border-radius: 4px; text-align: center; }
-        .success { background-color: #d4edda; color: #155724; }
-        .error { background-color: #f8d7da; color: #721c24; }
-        .info { padding: 10px; text-align: center; font-size: 0.9em; }
+        .message { padding: 10px; margin-bottom: 20px; border-radius: 5px; text-align: center; font-size: 0.9rem; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { margin-top: 20px; text-align: center; font-size: 0.9em; color: #666; }
+        .info a { color: #007bff; text-decoration: none; }
+        .info a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -117,12 +102,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <form action="connexion.php" method="POST">
             <div>
-                <label for="mail">Email :</label>
-                <input type="email" id="mail" name="mail" required>
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email" required>
             </div>
             <div>
-                <label for="mdp">Mot de passe :</label>
-                <input type="password" id="mdp" name="mdp" required>
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="password" required>
             </div>
             <div>
                 <button type="submit">Connexion</button>
