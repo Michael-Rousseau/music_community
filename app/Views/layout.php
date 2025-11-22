@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title><?= $title ?? 'Mon Site'; ?></title>
+    <title><?= $title ?? 'Music sharing'; ?></title>
 </head>
 <body>
 

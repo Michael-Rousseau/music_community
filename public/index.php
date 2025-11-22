@@ -65,7 +65,7 @@ $router->get('/logout', function() use ($pdo){ (new AuthController($pdo))->logou
 // Authenticated user routes
 $router->get('/profile', function() use ($pdo) {
     requireLogin();  // blocks anonymous users
-    (new ProfileController($pdo))->show();
+    (new ProfileController($pdo))->index();
 });
 
 $router->get('/m/new', function() use ($pdo) {
