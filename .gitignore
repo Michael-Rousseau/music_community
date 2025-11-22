@@ -1,3 +1,4 @@
 phpMyAdmin/
 vendor/
 composer.lock
+config/config.php
