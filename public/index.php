@@ -13,6 +13,32 @@ spl_autoload_register(function ($class) {
 // Include config
 require __DIR__ . '/../config/config.php';
 
+
+// Create PDO connection
+try {
+    $pdo = new PDO(
+        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+        DB_USER,
+        DB_PASS,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    );
+} catch (PDOException $e) {
+    die('Database connection failed: ' . $e->getMessage());
+}
+
+require __DIR__ . '/../app/Core/helpers.php';
+require __DIR__ . '/../vendor/autoload.php';
+
+
+
+use Controllers\AuthController;
+use Controllers\ProfileController;
+use Controllers\MusicController;
+
+
 // Simple Router
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -27,12 +53,34 @@ $router->get('/', 'Controllers\HomeController@index');
 $router->get('', 'Controllers\HomeController@index');
 $router->get('/m/(\d+)', 'Controllers\MusicController@show');
 
+// Auth routes
+$router->get('/login', function() use ($pdo){ (new AuthController($pdo))->showLogin(); });
+$router->post('/login', function() use ($pdo){ (new AuthController($pdo))->login(); });
+$router->get('/signup', function() use ($pdo){ (new AuthController($pdo))->showSignup(); });
+$router->post('/signup', function() use ($pdo){ (new AuthController($pdo))->signup(); });
+$router->get('/verify', function() use ($pdo){ (new AuthController($pdo))->verify(); });
+$router->get('/logout', function() use ($pdo){ (new AuthController($pdo))->logout(); });
+
+
 // Authenticated user routes
-$router->get('/profile', 'Controllers\ProfileController@index');
-$router->get('/profile/musics', 'Controllers\ProfileController@musics');
-$router->get('/m/new', 'Controllers\MusicController@create');
-$router->post('/m/new', 'Controllers\MusicController@store');
-$router->get('/m/new/success', 'Controllers\MusicController@success');
+$router->get('/profile', function() use ($pdo) {
+    requireLogin();  // blocks anonymous users
+    (new ProfileController($pdo))->show();
+});
+
+$router->get('/m/new', function() use ($pdo) {
+    requireLogin();  // blocks anonymous users
+    (new MusicController($pdo))->create();
+});
+$router->post('/m/new', function() use ($pdo) {
+    requireLogin();  // blocks anonymous users
+    (new MusicController($pdo))->store();
+});
+$router->get('/m/new/success', function() use ($pdo) {
+    requireLogin();  // blocks anonymous users
+    (new MusicController($pdo))->success();
+});
+
 
 // Admin routes
 $router->get('/admin', 'Controllers\AdminController@index');
