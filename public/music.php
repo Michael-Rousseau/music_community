@@ -5,23 +5,19 @@ require_once '../config/db.php';
 if (!isset($_GET['id'])) die("ID manquant");
 $music_id = (int)$_GET['id'];
 
-// 1. Récupérer la musique et l'auteur
 $stmt = $pdo->prepare("SELECT m.*, u.username, u.avatar FROM musics m JOIN users u ON m.user_id = u.id WHERE m.id = ?");
 $stmt->execute([$music_id]);
 $music = $stmt->fetch();
 if (!$music) die("Musique introuvable");
 
-// 2. Gestion Note (Rating)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['rating']) && isset($_SESSION['user_id'])) {
     $rating = (int)$_POST['rating'];
-    // Upsert (Insérer ou Mettre à jour si existe déjà)
     $sqlRate = "INSERT INTO ratings (user_id, music_id, value) VALUES (?, ?, ?) 
                 ON DUPLICATE KEY UPDATE value = ?";
     $stmtRate = $pdo->prepare($sqlRate);
     $stmtRate->execute([$_SESSION['user_id'], $music_id, $rating, $rating]);
 }
 
-// 3. Gestion Commentaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($_SESSION['user_id'])) {
     $content = trim($_POST['comment']);
     if (!empty($content)) {
@@ -31,12 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($
     }
 }
 
-// 4. Récupérer Moyenne Notes
 $stmtAvg = $pdo->prepare("SELECT AVG(value) as moy FROM ratings WHERE music_id = ?");
 $stmtAvg->execute([$music_id]);
 $avgRating = round($stmtAvg->fetch()['moy'], 1);
 
-// 5. Récupérer Commentaires
 $stmtC = $pdo->prepare("SELECT c.*, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.music_id = ? ORDER BY c.created_at DESC");
 $stmtC->execute([$music_id]);
 $comments = $stmtC->fetchAll();

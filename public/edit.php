@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) {
 }
 
 $id = (int)$_GET['id'];
-// Vérifier que la musique appartient bien à l'utilisateur
 $stmt = $pdo->prepare("SELECT * FROM musics WHERE id = ? AND user_id = ?");
 $stmt->execute([$id, $_SESSION['user_id']]);
 $music = $stmt->fetch();
@@ -24,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $upd = $pdo->prepare("UPDATE musics SET title=?, description=?, visibility=? WHERE id=?");
     $upd->execute([$title, $desc, $viz, $id]);
     $message = "Modifications enregistrées !";
-    // Rafraichir les données
     $music['title'] = $title; $music['description'] = $desc; $music['visibility'] = $viz;
 }
 ?>

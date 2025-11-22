@@ -1,42 +1,31 @@
 <?php
-// public/verif.php
 
-// 1. --- IMPORTATION DE LA CONFIGURATION ---
-// On utilise le fichier centralisé. Si on change de serveur, on ne touche qu'à db.php.
 require_once '../config/db.php';
 
 $message = '';
-$message_type = 'error'; // Par défaut, erreur
+$message_type = 'error'; 
 
-// 2. --- LOGIQUE DE VÉRIFICATION ---
 if (isset($_GET['token']) && !empty($_GET['token'])) {
     
     $token_recu = $_GET['token'];
 
     try {
-        // On tente de mettre à jour l'utilisateur qui possède ce token.
-        // L'action : On met le token à NULL (ce qui valide le compte).
-        // La condition : Le token doit correspondre à celui reçu.
         $stmt = $pdo->prepare("UPDATE users SET token = NULL WHERE token = ?");
         $stmt->execute([$token_recu]);
 
-        // 3. --- ANALYSE DU RÉSULTAT ---
-        // rowCount() nous dit combien de lignes ont été modifiées.
-        // Si > 0 : Le token existait, on l'a effacé -> SUCCÈS.
-        // Si = 0 : Le token n'existait pas (ou compte déjà validé) -> ÉCHEC.
+        // if rowcount > 0 : token existed, we delete it -> success.
+        // else:token didn't exist (or already validated account) -> fail.
         
         if ($stmt->rowCount() > 0) {
             $message = 'Félicitations ! Votre compte a été vérifié avec succès.';
             $message_type = 'success';
         } else {
-            // Sécurité : On reste vague pour ne pas donner d'infos aux pirates
             $message = 'Ce lien de validation est invalide ou a déjà été utilisé.';
             $message_type = 'error';
         }
 
     } catch (PDOException $e) {
-        // PROD : On n'affiche JAMAIS l'erreur SQL brute à l'utilisateur
-        error_log("Erreur DB verif.php : " . $e->getMessage()); // On loggue l'erreur côté serveur
+        error_log("Erreur DB verif.php : " . $e->getMessage()); 
         $message = 'Une erreur technique est survenue. Veuillez contacter le support.';
         $message_type = 'error';
     }

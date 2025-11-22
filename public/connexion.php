@@ -1,18 +1,12 @@
 <?php
-// 1. --- DÉMARRER LA SESSION ---
 session_start();
 
-// 2. --- INCLUSION DE LA CONNEXION BDD ---
-// On remonte d'un dossier (..) pour aller chercher config/db.php
 require_once '../config/db.php';
 
-// 3. --- INITIALISATION ---
 $message = '';
 
-// 4. --- TRAITEMENT DU FORMULAIRE ---
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // On vérifie 'email' car j'ai corrigé le name dans le HTML plus bas
     if (empty($_POST['email']) || empty($_POST['password'])) {
         $message = 'Erreur : Email et mot de passe requis.';
     } else {
@@ -21,31 +15,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password_posted = $_POST['password'];
 
         try {
-            // 5. RECHERCHER L'UTILISATEUR
-            // Correction : Table 'users' (pas useres)
             $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
             $stmt->execute([$email_posted]);
             $user = $stmt->fetch(); 
 
-            // 6. VÉRIFICATIONS
             if ($user) {
                 
-                // Vérification du mot de passe (La colonne BDD s'appelle 'password')
                 if (password_verify($password_posted, $user['password'])) {
 
-                    // Vérification du Token (Si NULL, c'est que le compte est validé)
                     if ($user['token'] === NULL) {
                         
-                        // --- SUCCÈS ---
                         session_regenerate_id(true);
                         
-                        // On stocke les infos disponibles dans ta nouvelle table
                         $_SESSION['user_id'] = $user['id'];
-                        $_SESSION['user_name'] = $user['username']; // Ta table a 'username', pas 'nom'/'prenom'
+                        $_SESSION['user_name'] = $user['username']; 
                         $_SESSION['user_role'] = $user['role'];
                         
-                        // Redirection
-                        header("Location: index.php"); // Ou dashboard.php
+                        header("Location: index.php"); 
                         exit;
 
                     } else {
@@ -59,9 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
         } catch (PDOException $e) {
-            // En production, évite d'afficher l'erreur brute SQL
             $message = 'Erreur technique lors de la connexion.';
-            /* // error_log($e->getMessage()); // Pour toi dans les logs serveur */
         }
     }
 }

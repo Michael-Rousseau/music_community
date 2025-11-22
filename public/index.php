@@ -2,7 +2,6 @@
 session_start();
 require_once '../config/db.php';
 
-// Recherche
 $search = isset($_GET['q']) ? trim($_GET['q']) : '';
 $sql = "SELECT m.*, u.username, u.avatar FROM musics m 
         JOIN users u ON m.user_id = u.id 

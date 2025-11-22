@@ -1,18 +1,15 @@
 <?php
 session_start();
 
-// CHARGEMENT DES LIBRAIRIES VIA VENDOR (COMPOSER)
 require '../vendor/autoload.php'; 
 require_once '../config/db.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Configuration de l'URL de base pour le lien
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 $domainName = $_SERVER['HTTP_HOST'];
 $path = dirname($_SERVER['PHP_SELF']);
-// Nettoyage si on est à la racine
 if($path === '/' || $path === '\\') $path = '';
 $server_url = $protocol . $domainName . $path; 
 
@@ -29,14 +26,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = 'Erreur : Format d\'email invalide.';
     } else {
         try {
-            // Vérification doublon
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ? OR username = ?");
             $stmt->execute([$email, $username]);
             
             if ($stmt->fetchColumn() > 0) {
                 $message = 'Erreur : Cet email ou ce nom d\'utilisateur est déjà pris.';
             } else {
-                // Création user
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 $token = bin2hex(random_bytes(32));
 
@@ -44,19 +39,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$username, $email, $hashed_password, $token]);
 
-                // Envoi email
                 $verification_link = $server_url . "/verif.php?token=" . $token;
                 
                 $mail = new PHPMailer(true);
                 try {
-                    // CONFIGURATION SMTP PROD (LOCALHOST)
                     $mail->isSMTP();
                     $mail->Host       = 'localhost'; 
-                    $mail->SMTPAuth   = false;       // Souvent false pour localhost
-                    $mail->Port       = 25;          // Port standard Postfix
+                    $mail->SMTPAuth   = false;       
+                    $mail->Port       = 25;         
                     $mail->CharSet    = 'UTF-8';
 
-                    $mail->setFrom('no-reply@michael.rousseau.13h37.io', 'Music Community'); // Mets ton domaine ici
+                    $mail->setFrom('no-reply@michael.rousseau.13h37.io', 'Music Community'); 
                     $mail->addAddress($email, $username);
 
                     $mail->isHTML(true);
@@ -68,7 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $message = 'Succès ! Vérifiez vos emails pour activer votre compte.';
 
                 } catch (Exception $e) {
-                    // En prod, on log l'erreur mais on affiche un message gentil
                     error_log("Mail Error: " . $mail->ErrorInfo);
                     $message = "Compte créé, mais impossible d'envoyer l'email. Contactez l'admin.";
                 }

@@ -2,22 +2,18 @@
 session_start();
 require_once '../config/db.php';
 
-// SÉCURITÉ : Seuls les admins passent
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     die("Accès interdit (Réservé aux administrateurs).");
 }
 
-// Suppression Utilisateur
 if (isset($_GET['del_user'])) {
     $uid = (int)$_GET['del_user'];
     $pdo->prepare("DELETE FROM users WHERE id = ?")->execute([$uid]);
     header("Location: admin.php"); exit;
 }
 
-// Suppression Musique
 if (isset($_GET['del_music'])) {
     $mid = (int)$_GET['del_music'];
-    // Récupérer le nom du fichier pour le supprimer du disque aussi
     $stmt = $pdo->prepare("SELECT filename FROM musics WHERE id = ?");
     $stmt->execute([$mid]);
     $file = $stmt->fetchColumn();
