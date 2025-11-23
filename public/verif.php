@@ -37,7 +37,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
             // SUCCÈS : 1 ligne a été modifiée, le token était bon
             $message = 'Vérification réussie ! Votre compte est maintenant actif. Vous pouvez vous connecter.';
             $message_type = 'success';
-            header("Location: /login");
+            header("Location: " . BASE_URL . "login");
             exit;
         } else {
             // ÉCHEC : 0 ligne modifiée, le token est invalide ou a déjà été utilisé

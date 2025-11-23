@@ -1,65 +1,68 @@
 <header class="site-header">
-    <div class="header-container">
-        <a href="/" class="logo">MyMusic</a>
+    <div class="header-container wrapper">
+        
+        <a href="<?= BASE_URL ?>/" class="logo">
+            <div>
+                <img src="<?= BASE_URL ?>/assets/images/logo_tempo.png" alt="Logo Tempo">
+            </div>
+        </a>
 
         <nav>
             <?php if(\Core\Auth::check()): ?>
-                <a href="/profile">Profil</a>
-                <a href="/logout">Déconnexion</a>
+                <a href="<?= BASE_URL ?>/m/new">Uploader une musique</a>
+                <a href="<?= BASE_URL ?>/profile">Profil</a>
             <?php else: ?>
-                <a href="/login" class="login-button">Connexion</a>
+                <a href="<?= BASE_URL ?>/login" class="btn primary">Connexion</a>
             <?php endif; ?>
         </nav>
     </div>
 </header>
 
 <style>
+
     .site-header {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        height: 60px;
-        background: #111;
-        color: #fff;
+        height: var(--header-height);
+        background: var(--background-light);
         display: flex;
         align-items: center;
         z-index: 1000;
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid #eee;
     }
 
     .header-container {
-        max-width: 1100px;
-        margin: 0 auto;
-        width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 20px;
     }
 
     .logo {
-        color: #fff;
-        text-decoration: none;
-        font-size: 20px;
-        font-weight: bold;
+        max-width: 100%;
+        max-height: 100%;
+    }
+    .logo div {
+        max-width: 100%;
+        max-height: var(--header-height);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+    }
+    .logo img {
+        height: calc(var(--header-height) - 2 * 10px); 
+        width: auto;                 
+        max-width: none;              
+        object-fit: contain;
+        display: block;
     }
 
-    nav a {
-        color: #fff;
-        text-decoration: none;
-        margin-left: 20px;
-        font-size: 16px;
+
+    nav {
+        display: flex;
+        gap: 20px;
     }
 
-    .login-button {
-        padding: 6px 12px;
-        background: #fff;
-        color: #111 !important;
-        border-radius: 4px;
-    }
-
-    body {
-        padding-top: 60px; /* ensures content is not behind the header */
-    }
 </style>

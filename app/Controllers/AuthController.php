@@ -37,7 +37,8 @@ class AuthController {
             if ($this->userModel->validatePassword($user, $password)) {
                 if ($user['token'] === null) {
                     Auth::login($user);
-                    header("Location: /profile");
+                    header("Location: " . BASE_URL . "/profile");
+
                     exit;
                 } else {
                     $message = "Votre compte n'est pas encore vérifié. Vérifiez votre email.";

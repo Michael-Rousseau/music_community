@@ -4,7 +4,7 @@ use Core\Auth;
 
 function requireLogin() {
     if (!Auth::check()) {
-        header("Location: /login");
+        header("Location: " . BASE_URL . "login");
         exit;
     }
 }

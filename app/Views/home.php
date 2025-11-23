@@ -1,11 +1,10 @@
 <?php
 ob_start();
 ?>
-<h1>Mon profil</h1>
-<p>Contenu du profil…</p>
+<h1>Accueil</h1>
 
 <?php
 $content = ob_get_clean();
-$title = "Home";
+$title = "Accueil";
 include __DIR__ . '/layout.php';
 ?>

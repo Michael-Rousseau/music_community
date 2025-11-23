@@ -21,7 +21,7 @@ class ProfileController
         $user = Auth::user(); // return $_SESSION['user']
 
         if (!$user) {
-            header("Location: /login");
+            header("Location: " . BASE_URL . "login");
             exit;
         }
 
