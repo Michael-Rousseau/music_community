@@ -33,6 +33,8 @@ class ProfileController
             die("Utilisateur introuvable.");
         }
 
+        $userName = $_SESSION['username'];
+
         include __DIR__ . '/../Views/profile.php';
     }
 }

@@ -70,11 +70,11 @@ $router->get('/profile', function() use ($pdo) {
 
 $router->get('/m/new', function() use ($pdo) {
     requireLogin();  // blocks anonymous users
-    (new MusicController($pdo))->create();
+    (new MusicController($pdo))->uploadForm();
 });
 $router->post('/m/new', function() use ($pdo) {
     requireLogin();  // blocks anonymous users
-    (new MusicController($pdo))->store();
+    (new MusicController($pdo))->create();
 });
 $router->get('/m/new/success', function() use ($pdo) {
     requireLogin();  // blocks anonymous users
