@@ -252,7 +252,7 @@ function init3D() {
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.outputColorSpace = THREE.sRGBEncoding;
+  renderer.outputEncoding = THREE.sRGBEncoding;
   const container = document.getElementById("canvas-container");
   if (container) container.appendChild(renderer.domElement);
 
