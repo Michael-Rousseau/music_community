@@ -139,8 +139,8 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
 
     <div class="hud-layer">
         <div class="top-bar">
-            <a href="index.php" class="back-btn"><i class="fas fa-arrow-left"></i> RETOUR</a>
-            <div class="song-info">
+             <a href="index.php" class="back-btn"><i class="fas fa-arrow-left"></i> RETOUR</a>
+             <div class="song-info">
                 <h1 class="song-title"><?php echo htmlspecialchars($music['title']); ?></h1>
                 <div style="text-align:right; color:var(--secondary); letter-spacing:3px; margin-bottom:5px;">
                     <?php echo strtoupper(htmlspecialchars($music['username'])); ?>
@@ -166,7 +166,7 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
             <button id="playBtn" class="play-btn"><i class="fas fa-play"></i></button>
             <div class="progress-wrapper" id="progressContainer">
                 <div class="progress-fill" id="progressBar"></div>
-                </div>
+            </div>
             <div class="time"><span id="currTime">00:00</span></div>
         </div>
     </div>
@@ -207,175 +207,12 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
     
     <audio id="audio" src="uploads/mp3/<?php echo htmlspecialchars($music['filename']); ?>" crossorigin="anonymous"></audio>
 
-<script>
-    // --- DONNÉES COMMENTAIRES (Injectées par PHP en JSON) ---
-    const commentsData = <?php echo json_encode($comments); ?>;
+    <script>
+        const commentsData = <?php echo json_encode($comments); ?>;
+        const isUserLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    </script>
 
-    // --- UI LOGIC ---
-    function toggleDrawer(show) {
-        const d = document.getElementById('drawer');
-        const o = document.getElementById('overlay');
-        if(show) { d.classList.add('open'); o.classList.add('visible'); }
-        else { d.classList.remove('open'); o.classList.remove('visible'); }
-    }
+    <script src="assets/player.js"></script>
 
-    function submitRating(val) {
-        <?php if(!isset($_SESSION['user_id'])): ?>
-            window.location.href = 'connexion.php';
-        <?php else: ?>
-            document.getElementById('ratingInput').value = val;
-            document.getElementById('ratingForm').submit();
-        <?php endif; ?>
-    }
-
-    function jumpTo(seconds) {
-        const audio = document.getElementById('audio');
-        audio.currentTime = seconds;
-        if(audio.paused) {
-             document.getElementById('playBtn').click();
-        }
-    }
-
-    // --- AUDIO & TIMELINE LOGIC ---
-    const audio = document.getElementById('audio');
-    const playBtn = document.getElementById('playBtn');
-    const icon = playBtn.querySelector('i');
-    const bar = document.getElementById('progressBar');
-    const barCont = document.getElementById('progressContainer');
-    const timestampInput = document.getElementById('timestampInput');
-    const popup = document.getElementById('popup');
-    const popupUser = document.getElementById('popupUser');
-    const popupContent = document.getElementById('popupContent');
-    
-    let isPlaying = false;
-    let markersCreated = false;
-
-    playBtn.addEventListener('click', () => {
-        if(!context) initAudioContext();
-        if(isPlaying) { audio.pause(); icon.classList.replace('fa-pause', 'fa-play'); }
-        else { audio.play(); icon.classList.replace('fa-play', 'fa-pause'); }
-        isPlaying = !isPlaying;
-    });
-
-    // Créer les marqueurs sur la timeline une fois que les métadonnées (durée) sont chargées
-    audio.addEventListener('loadedmetadata', () => {
-        if(!markersCreated && audio.duration > 0) createMarkers();
-    });
-
-    function createMarkers() {
-        const duration = audio.duration;
-        commentsData.forEach(c => {
-            if(c.timestamp > duration) return;
-            const left = (c.timestamp / duration) * 100;
-            const marker = document.createElement('div');
-            marker.className = 'comment-marker';
-            marker.style.left = left + '%';
-            barCont.appendChild(marker);
-        });
-        markersCreated = true;
-    }
-
-    audio.addEventListener('timeupdate', () => {
-        if(!audio.duration) return;
-        
-        // Mise à jour barre
-        const pct = (audio.currentTime/audio.duration)*100;
-        bar.style.width = pct + '%';
-        
-        // Mise à jour temps texte
-        let m = Math.floor(audio.currentTime/60), s = Math.floor(audio.currentTime%60);
-        document.getElementById('currTime').innerText = `${m}:${s<10?'0'+s:s}`;
-
-        // Mise à jour input caché pour le prochain commentaire
-        timestampInput.value = Math.floor(audio.currentTime);
-
-        // GESTION POP-UP COMMENTAIRES
-        // On cherche un commentaire proche de l'instant T (à +/- 1 seconde)
-        // On évite de spammer en vérifiant si on l'a déjà affiché récemment
-        const currentSec = audio.currentTime;
-        const activeComment = commentsData.find(c => Math.abs(c.timestamp - currentSec) < 0.5);
-
-        if(activeComment) {
-            popupUser.innerText = activeComment.username;
-            popupContent.innerText = activeComment.content;
-            popup.classList.add('active');
-            
-            // Highlight marker
-            // (Note: pour simplifier, on n'illumine pas le marqueur spécifique ici, 
-            // mais on pourrait le faire en stockant les refs des marqueurs)
-        } else {
-            popup.classList.remove('active');
-        }
-    });
-
-    barCont.addEventListener('click', (e) => {
-        const pct = e.offsetX / barCont.clientWidth;
-        audio.currentTime = pct * audio.duration;
-    });
-
-    // --- 3D VISUALIZER (Code identique, optimisé) ---
-    let scene, camera, renderer, geometry, mesh, context, analyser, dataArray;
-    let noise = new SimplexNoise();
-
-    function init3D() {
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        camera.position.z = 4;
-        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-        
-        const l1 = new THREE.PointLight(0xbd00ff, 1); l1.position.set(5,5,5); scene.add(l1);
-        const l2 = new THREE.PointLight(0x00f3ff, 1); l2.position.set(-5,-5,5); scene.add(l2);
-        
-        geometry = new THREE.IcosahedronGeometry(1.8, 4);
-        const mat = new THREE.MeshBasicMaterial({ color: 0xbd00ff, wireframe: true, transparent: true, opacity: 0.8 });
-        mesh = new THREE.Mesh(geometry, mat);
-        scene.add(mesh);
-        animate();
-    }
-
-    function initAudioContext() {
-        if(context) return;
-        context = new (window.AudioContext||window.webkitAudioContext)();
-        analyser = context.createAnalyser();
-        const src = context.createMediaElementSource(audio);
-        src.connect(analyser);
-        analyser.connect(context.destination);
-        analyser.fftSize = 512;
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
-    }
-
-    function animate() {
-        requestAnimationFrame(animate);
-        let bass = 0;
-        if(analyser) { analyser.getByteFrequencyData(dataArray); bass = dataArray[0]; }
-        
-        const pos = geometry.getAttribute('position');
-        const vec = new THREE.Vector3();
-        const time = performance.now() * 0.001;
-        const bassNorm = bass/255;
-
-        for(let i=0; i<pos.count; i++) {
-            vec.fromBufferAttribute(pos, i);
-            vec.normalize();
-            const dist = 1.8 + noise.noise3D(vec.x+time, vec.y+time, vec.z+time) * (0.3 + bassNorm*0.8);
-            vec.multiplyScalar(dist);
-            pos.setXYZ(i, vec.x, vec.y, vec.z);
-        }
-        geometry.computeVertexNormals();
-        pos.needsUpdate = true;
-        
-        mesh.rotation.y += 0.002 + bassNorm*0.01;
-        mesh.rotation.z += 0.002;
-        renderer.render(scene, camera);
-    }
-    
-    window.addEventListener('resize', () => {
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        camera.updateProjectionMatrix();
-    });
-    init3D();
-</script>
 </body>
 </html>
