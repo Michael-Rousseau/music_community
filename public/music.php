@@ -52,8 +52,14 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
 <head>
     <meta charset="UTF-8">
     <title><?php echo htmlspecialchars($music['title']); ?></title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+      }
+    }
+    </script>
     <link rel="stylesheet" href="assets/style.css"> <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Rajdhani:wght@300;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -212,7 +218,7 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
         const isUserLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
     </script>
 
-    <script src="assets/player.js"></script>
+    <script type="module" src="assets/player.js"></script>
 
 </body>
 </html>
