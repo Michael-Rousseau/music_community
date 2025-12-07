@@ -86,11 +86,11 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
 
         /* Comment Pop-up (Le message qui apparait au bon moment) */
         .comment-popup {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center; opacity: 0; transition: opacity 0.3s, transform 0.3s;
-            pointer-events: none; width: 80%;
+            position: absolute; bottom: 140px; left: 40px;
+            text-align: left; opacity: 0; transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none; max-width: 500px; transform: translateY(10px);
         }
-        .comment-popup.active { opacity: 1; transform: translate(-50%, -60%); }
+        .comment-popup.active { opacity: 1; transform: translateY(0); }
         .popup-user { color: var(--secondary); font-family: 'Orbitron'; font-size: 1.2rem; display: block; margin-bottom: 5px; text-shadow: 0 0 10px var(--secondary); }
         .popup-content { font-size: 1.5rem; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); }
 

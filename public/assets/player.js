@@ -4,8 +4,7 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
-// Make functions available globally for inline HTML event handlers
-window.toggleDrawer = function(show) {
+window.toggleDrawer = function (show) {
   const d = document.getElementById("drawer");
   const o = document.getElementById("overlay");
   if (show) {
@@ -17,7 +16,7 @@ window.toggleDrawer = function(show) {
   }
 };
 
-window.submitRating = function(val) {
+window.submitRating = function (val) {
   if (!window.isUserLoggedIn) {
     window.location.href = "connexion.php";
   } else {
@@ -26,7 +25,7 @@ window.submitRating = function(val) {
   }
 };
 
-window.jumpTo = function(seconds) {
+window.jumpTo = function (seconds) {
   const audio = document.getElementById("audio");
   audio.currentTime = seconds;
   if (audio.paused) {
@@ -118,7 +117,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let scene, camera, renderer, geometry, mesh, context, analyser, dataArray;
 let clock, bloomComposer;
-let mouseX = 0, mouseY = 0;
+let mouseX = 0,
+  mouseY = 0;
 
 const params = {
   red: 1.0,
@@ -129,7 +129,6 @@ const params = {
   radius: 0.8,
 };
 
-// Perlin noise shader functions
 const vertexShader = `
   uniform float u_time;
   uniform float u_frequency;
@@ -253,7 +252,7 @@ function init3D() {
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.outputColorSpace = THREE.sRGBEncoding;
   const container = document.getElementById("canvas-container");
   if (container) container.appendChild(renderer.domElement);
 
@@ -261,7 +260,7 @@ function init3D() {
   const renderScene = new RenderPass(scene, camera);
 
   const bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(window.innerWidth, window.innerHeight)
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
   );
   bloomPass.threshold = params.threshold;
   bloomPass.strength = params.strength;
@@ -274,7 +273,6 @@ function init3D() {
   const outputPass = new OutputPass();
   bloomComposer.addPass(outputPass);
 
-  // Create shader material with uniforms
   const uniforms = {
     u_time: { type: "f", value: 0.0 },
     u_frequency: { type: "f", value: 0.0 },
@@ -296,7 +294,6 @@ function init3D() {
 
   clock = new THREE.Clock();
 
-  // Mouse movement listener
   document.addEventListener("mousemove", (e) => {
     const windowHalfX = window.innerWidth / 2;
     const windowHalfY = window.innerHeight / 2;
@@ -333,7 +330,8 @@ function animate() {
 
     if (analyser && dataArray) {
       analyser.getByteFrequencyData(dataArray);
-      const averageFrequency = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+      const averageFrequency =
+        dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
       mesh.material.uniforms.u_frequency.value = averageFrequency;
     }
   }
