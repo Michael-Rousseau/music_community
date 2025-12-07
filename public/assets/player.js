@@ -253,25 +253,25 @@ function init3D() {
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.outputEncoding = THREE.sRGBEncoding;
   const container = document.getElementById("canvas-container");
   if (container) container.appendChild(renderer.domElement);
 
   // Setup bloom post-processing
-  const renderScene = new THREE.RenderPass(scene, camera);
+  const renderScene = new RenderPass(scene, camera);
 
-  const bloomPass = new THREE.UnrealBloomPass(
+  const bloomPass = new UnrealBloomPass(
     new THREE.Vector2(window.innerWidth, window.innerHeight)
   );
   bloomPass.threshold = params.threshold;
   bloomPass.strength = params.strength;
   bloomPass.radius = params.radius;
 
-  bloomComposer = new THREE.EffectComposer(renderer);
+  bloomComposer = new EffectComposer(renderer);
   bloomComposer.addPass(renderScene);
   bloomComposer.addPass(bloomPass);
 
-  const outputPass = new THREE.OutputPass();
+  const outputPass = new OutputPass();
   bloomComposer.addPass(outputPass);
 
   // Create shader material with uniforms
