@@ -111,6 +111,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let scene, camera, renderer, geometry, mesh, context, analyser, dataArray;
 let simplex;
+let smoothedBass = 0;
+let smoothedMid = 0;
+let smoothedTreble = 0;
 
 function init3D() {
   scene = new THREE.Scene();
@@ -127,13 +130,17 @@ function init3D() {
   const container = document.getElementById("canvas-container");
   if (container) container.appendChild(renderer.domElement);
 
-  const l1 = new THREE.PointLight(0xbd00ff, 2);
+  // Softer, more balanced lighting with multiple colors
+  const l1 = new THREE.PointLight(0x4a90e2, 1.5); // Blue
   l1.position.set(5, 5, 5);
   scene.add(l1);
-  const l2 = new THREE.PointLight(0x00f3ff, 2);
+  const l2 = new THREE.PointLight(0x9b59b6, 1.5); // Purple
   l2.position.set(-5, -5, 5);
   scene.add(l2);
-  const ambientLight = new THREE.AmbientLight(0x404040);
+  const l3 = new THREE.PointLight(0xe74c3c, 1); // Red
+  l3.position.set(0, 5, -5);
+  scene.add(l3);
+  const ambientLight = new THREE.AmbientLight(0x202020, 2);
   scene.add(ambientLight);
 
   // Create blob with high subdivisions for ultra-smooth deformation
@@ -144,13 +151,13 @@ function init3D() {
   geometry.userData.originalPositions = originalPositions;
 
   const mat = new THREE.MeshPhysicalMaterial({
-    color: 0xbd00ff,
-    roughness: 0.1,
-    metalness: 0.3,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.1,
+    color: 0x6b7fd7, // Softer blue-purple
+    roughness: 0.2,
+    metalness: 0.1,
+    clearcoat: 0.8,
+    clearcoatRoughness: 0.2,
     transparent: true,
-    opacity: 0.95,
+    opacity: 0.9,
     wireframe: false,
     flatShading: false,
   });
@@ -198,12 +205,18 @@ function animate() {
     mid = midArray.reduce((a, b) => a + b, 0) / midArray.length / 255;
     treble = trebleArray.reduce((a, b) => a + b, 0) / trebleArray.length / 255;
     overall = dataArray.reduce((a, b) => a + b, 0) / dataArray.length / 255;
+
+    // Smooth the audio values for cleaner movement
+    const smoothing = 0.85;
+    smoothedBass += (bass - smoothedBass) * (1 - smoothing);
+    smoothedMid += (mid - smoothedMid) * (1 - smoothing);
+    smoothedTreble += (treble - smoothedTreble) * (1 - smoothing);
   }
 
   if (geometry && simplex) {
     const pos = geometry.attributes.position;
     const originalPos = geometry.userData.originalPositions;
-    const time = performance.now() * 0.0003;
+    const time = performance.now() * 0.0002; // Slower base movement
 
     for (let i = 0; i < pos.count; i++) {
       const i3 = i * 3;
@@ -219,23 +232,22 @@ function animate() {
       const ny = oy / length;
       const nz = oz / length;
 
-      // Multiple layers of noise at different scales for complex organic shape
-      const noise1 = simplex.noise3D(nx * 1.2 + time, ny * 1.2 + time, nz * 1.2 + time);
-      const noise2 = simplex.noise3D(nx * 2.5 + time * 1.5, ny * 2.5 + time * 1.5, nz * 2.5 + time * 1.5);
-      const noise3 = simplex.noise3D(nx * 0.5 + time * 0.5, ny * 0.5 + time * 0.5, nz * 0.5 + time * 0.5);
+      // Single smooth noise layer for cleaner movement
+      const noise = simplex.noise3D(
+        nx * 0.8 + time,
+        ny * 0.8 + time,
+        nz * 0.8 + time
+      );
 
-      // Combine noise layers for rich organic movement
-      const combinedNoise = noise1 * 0.5 + noise2 * 0.25 + noise3 * 0.25;
-
-      // Audio reactivity with stronger influence
+      // Subtle audio reactivity using smoothed values
       const audioDisplacement =
-        bass * 0.8 +                          // Bass creates strong pulsing
-        mid * 0.6 * (noise1 * 0.5 + 0.5) +   // Mid adds organic bulges
-        treble * 0.2 * (noise2 * 0.5 + 0.5); // Treble adds surface detail
+        smoothedBass * 0.4 +                    // Gentle bass pulsing
+        smoothedMid * 0.3 * (noise * 0.5 + 0.5) +  // Subtle mid variation
+        smoothedTreble * 0.1;                   // Minimal treble shimmer
 
-      // Calculate final displacement
+      // Calculate final displacement with reduced noise influence
       const baseRadius = 2.0;
-      const displacement = combinedNoise * 0.6 + audioDisplacement;
+      const displacement = noise * 0.25 + audioDisplacement;
       const finalRadius = baseRadius + displacement;
 
       // Apply to position
@@ -245,9 +257,9 @@ function animate() {
     geometry.computeVertexNormals();
     pos.needsUpdate = true;
 
-    // Very slow, fluid rotation
-    mesh.rotation.y += 0.0008 + overall * 0.003;
-    mesh.rotation.x += 0.0003 + bass * 0.002;
+    // Minimal rotation for cleaner look
+    mesh.rotation.y += 0.0005 + overall * 0.001;
+    mesh.rotation.x += 0.0002;
   }
 
   renderer.render(scene, camera);
