@@ -61,6 +61,7 @@ $router->post('/signup', function() use ($pdo){ (new AuthController($pdo))->sign
 $router->get('/verify', function() use ($pdo){ (new AuthController($pdo))->verify(); });
 $router->get('/logout', function() use ($pdo){ (new AuthController($pdo))->logout(); });
 
+$router->post('/m/(\d+)/comment', 'Controllers\MusicController@postComment');
 
 // Authenticated user routes
 $router->get('/profile', function() use ($pdo) {
