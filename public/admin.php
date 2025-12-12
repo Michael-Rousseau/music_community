@@ -46,7 +46,7 @@ $musics = $pdo->query("SELECT m.*, u.username FROM musics m JOIN users u ON m.us
     <nav>
         <a href="index.php">← Retour au site</a>
     </nav>
-    <h1>Panneau d'Administration</h1>
+    <h1>Panneau d'Administration lol</h1>
     
     <div class="container">
         <div class="panel">
