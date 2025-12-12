@@ -9,4 +9,4 @@ define('DB_PASS', 'Collector10');
 
 // Base URL configuration
 // Since your site is in the /public folder, we define it here.
-define('BASE_URL', '/public');
+define('BASE_URL', '');
