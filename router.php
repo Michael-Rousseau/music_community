@@ -1,55 +1,14 @@
 <?php
-namespace Core;
+// router.php (At the root of the project)
+$publicFolder = __DIR__ . '/public';
 
-class Router {
-    private $routes = ['GET' => [], 'POST' => []];
+$path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+$file = $publicFolder . $path;
 
-    public function get($pattern, $callback) {
-        $this->routes['GET'][$pattern] = $callback;
-    }
-
-    public function post($pattern, $callback) {
-        $this->routes['POST'][$pattern] = $callback;
-    }
-
-public function dispatch($uri, $method) {
-        // 1. Handle BASE_URL
-        if (defined('BASE_URL') && BASE_URL !== '' && BASE_URL !== '/') {
-            if (strpos($uri, BASE_URL) === 0) {
-                $uri = substr($uri, strlen(BASE_URL));
-            }
-        }
-
-        if ($uri !== '/') {
-            $uri = rtrim($uri, '/');
-        }
-
-        foreach ($this->routes[$method] as $pattern => $callback) {
-            $pattern = '#^' . $pattern . '$#';
-            if (preg_match($pattern, $uri, $matches)) {
-                array_shift($matches);
-
-                if (is_string($callback)) {
-                    list($controller, $action) = explode('@', $callback);
-                    
-                    // Inject Global PDO into Controller
-                    global $pdo;
-                    if(class_exists($controller)) {
-                        $controllerInstance = new $controller($pdo);
-                        return call_user_func_array([$controllerInstance, $action], $matches);
-                    } else {
-                        die("Controller class '$controller' not found.");
-                    }
-                    
-                } elseif (is_callable($callback)) {
-                    return call_user_func_array($callback, $matches);
-                }
-            }
-        }
-
-        // 404 Output
-        http_response_code(404);
-        echo "<h1>404 Not Found</h1>";
-        echo "<p>No URL found for URI: <strong>" . htmlspecialchars($uri) . "</strong></p>";
-    }
+// If the file exists (like an image or CSS), serve it directly
+if (is_file($file)) {
+    return false; 
 }
+
+// Otherwise, send everything to index.php
+require $publicFolder . '/index.php';
