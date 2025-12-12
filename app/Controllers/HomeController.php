@@ -8,18 +8,15 @@ class HomeController {
     private $pdo;
     private $musicModel;
 
-    // The Router needs to inject PDO here. 
-    // *NOTE*: Your Router class creates "new $controller()". 
-    // You might need to edit Router.php to pass $pdo, OR use global $pdo.
-    // For simplicity, let's assume we pass $pdo in constructor manually or use a simple Dependency Injection.
-    // FIX: Let's use `global $pdo` inside the controller methods for now to keep it simple without changing Router logic too much.
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
+        $this->musicModel = new Music($pdo);
+    }
 
     public function index() {
-        global $pdo; // Get the connection created in index.php
-        $model = new Music($pdo);
-
+        // Fetch public musics for the homepage grid
         $search = isset($_GET['q']) ? trim($_GET['q']) : '';
-        $musics = $model->findAllPublic($search);
+        $musics = $this->musicModel->findAllPublic($search);
 
         include __DIR__ . '/../Views/home.php';
     }
