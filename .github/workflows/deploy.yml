@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
@@ -18,4 +18,4 @@ jobs:
           port: 22
           script: |
             cd /var/www/music_community
-            git pull origin master
+            git pull origin main

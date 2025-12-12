@@ -1,6 +1,7 @@
 <?php
 // Start session for user authentication
 session_start();
+require_once '../config/db.php';
 
 // Autoload classes
 spl_autoload_register(function ($class) {
