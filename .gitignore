@@ -3,3 +3,4 @@ vendor/
 uploads/
 composer.json
 composer.lock
+config/config.php

@@ -19,6 +19,8 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
         if ($stmt->rowCount() > 0) {
             $message = 'Félicitations ! Votre compte a été vérifié avec succès.';
             $message_type = 'success';
+            header("Location: " . BASE_URL . "login");
+            exit;
         } else {
             $message = 'Ce lien de validation est invalide ou a déjà été utilisé.';
             $message_type = 'error';

@@ -1,0 +1,199 @@
+/* -----------------------------------------------------------
+   GLOBAL VARIABLES
+----------------------------------------------------------- */
+:root {
+    /* Typography */
+    --font-heading: "Montserrat", sans-serif;
+    --font-body: "Montserrat", sans-serif;
+
+    /* Colors (based on logo) */
+    --pink: #F7AAC3;
+    --pink-dark: #e08baa; /* darker shade for hover states */
+    --charcoal: #2D2828;
+    --charcoal-light: #4b4545;
+
+    /* Backgrounds */
+    --background-light: #f9f7f8;
+
+    /* Text */
+    --text-dark: #2D2828;
+    --text-muted: #6f6a6a;
+
+    /* Spacing */
+    --radius-1: 6px;
+    --radius-2: 12px;
+    --radius-3: 24px;
+    --radius-rounded: 60px;
+    --transition: 0.2s ease;
+
+    --header-height : 70px;
+    --wrapper-width: 1100px;
+
+}
+
+/* -----------------------------------------------------------
+   RESET & BASICS
+----------------------------------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--background-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+    font-size: 1rem;
+    padding-top: var(--header-height); /* your fixed header */
+}
+
+
+/* -----------------------------------------------------------
+   TYPOGRAPHY
+----------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--charcoal);
+    margin-bottom: 0.5em;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+/* Muted text */
+.text-muted {
+    color: var(--text-muted);
+}
+
+/* -----------------------------------------------------------
+   LINKS
+----------------------------------------------------------- */
+a {
+    color: var(--charcoal);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--charcoal-light);
+    text-decoration: underline;
+}
+
+/* -----------------------------------------------------------
+   BUTTONS
+----------------------------------------------------------- */
+/* Base button */
+.btn, button {
+    display: inline-block;
+    padding: 10px 18px;
+    font-size: 15px;
+    border-radius: var(--radius-rounded);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: var(--transition);
+    font-family: var(--font-body);
+
+}
+
+/* Primary (pink) */
+.btn.primary, button.primary {
+    background: var(--pink);
+    color: var(--charcoal);
+    padding: 0.3em 0.7em;
+}
+
+.btn-primary:hover, button.primary:hover {
+    background: var(--pink-dark);
+}
+
+/* Secondary (outline charcoal) */
+.btn-secondary {
+    background: transparent;
+    color: var(--charcoal);
+    border: 1px solid var(--charcoal);
+}
+
+.btn-secondary:hover {
+    background: var(--charcoal);
+    color: white;
+}
+
+/* Subtle button (used for links or small actions) */
+.btn-light {
+    background: white;
+    border: 1px solid #ddd;
+    color: var(--charcoal);
+}
+
+.btn-light:hover {
+    border-color: #bbb;
+}
+
+/* -----------------------------------------------------------
+   FORMS
+----------------------------------------------------------- */
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    font-family: var(--font-body);
+    font-size: 15px;
+    transition: var(--transition);
+    border-radius: var(--radius-1);
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--pink-dark);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(247,170,195,0.4);
+}
+
+button[type="submit"]{
+    width: 100%;
+    height: 2em;
+}
+
+label {
+    text-align: left;
+    width: 100%;
+}
+
+/* -----------------------------------------------------------
+   CARDS (optional but useful)
+----------------------------------------------------------- */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius-1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+    margin-bottom: 20px;
+}
+
+main{
+    padding-inline: 20px;
+}
+
+.stack {
+    display : flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.wrapper {
+    max-width: var(--wrapper-width);
+    max-height: 100%;
+    margin: 0 auto;
+    width: 100%;
+    padding:0 20px;
+    overflow: hidden;
+}
