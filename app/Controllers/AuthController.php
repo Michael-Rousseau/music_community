@@ -1,4 +1,5 @@
 <?php
+
 namespace Controllers;
 
 use Core\Auth;
@@ -6,21 +7,27 @@ use Models\User;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-class AuthController {
+class AuthController
+{
     private $pdo;
     private $userModel;
-    private $server_url = 'http://localhost:8000'; // change to your domain
+    private $server_url = 'https://marie-lou.allain.13h37.io/music_community'; // change to your domain
 
-    public function __construct($pdo) {
+    public function __construct($pdo)
+    {
         $this->pdo = $pdo;
         $this->userModel = new User($pdo);
     }
 
-    public function showLogin() {
+    public function showLogin()
+    {
         include __DIR__ . '/../Views/auth/login.php';
     }
 
-    public function login() {
+    public function login()
+    {
+
+
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         $message = '';
@@ -53,11 +60,13 @@ class AuthController {
         include __DIR__ . '/../Views/auth/login.php';
     }
 
-    public function showSignup() {
+    public function showSignup()
+    {
         include __DIR__ . '/../Views/auth/signup.php';
     }
 
-    public function signup() {
+    public function signup()
+    {
         $email = $_POST['email'] ?? '';
         $username = $_POST['username'] ?? '';
         $password = $_POST['password'] ?? '';
@@ -77,12 +86,11 @@ class AuthController {
 
         $existing = $this->userModel->findByEmail($email);
         if ($existing) {
-            if ($existing['token'] === null){
+            if ($existing['token'] === null) {
                 $message = 'Email déjà enregistré';
                 include __DIR__ . '/../Views/auth/signup.php';
                 return;
-            }
-            else {
+            } else {
                 $this->userModel->deleteByEmail($email);
             }
         }
@@ -116,7 +124,8 @@ class AuthController {
         include __DIR__ . '/../Views/auth/signup.php';
     }
 
-    public function verify() {
+    public function verify()
+    {
         $token = $_GET['token'] ?? '';
         $message = '';
         if ($token && $this->userModel->verify($token)) {
@@ -128,9 +137,12 @@ class AuthController {
         include __DIR__ . '/../Views/auth/verify.php';
     }
 
-    public function logout() {
+    public function logout()
+    {
         Auth::logout();
-        header("Location: /");
+        header("Location: " . BASE_URL . "/");
+        require_once __DIR__ . '/../../config/db.php';
+
         exit;
     }
 }

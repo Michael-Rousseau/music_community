@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require '../vendor/autoload.php'; 
+require '../vendor/autoload.php';
 require_once '../config/db.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -10,8 +10,8 @@ use PHPMailer\PHPMailer\Exception;
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 $domainName = $_SERVER['HTTP_HOST'];
 $path = dirname($_SERVER['PHP_SELF']);
-if($path === '/' || $path === '\\') $path = '';
-$server_url = $protocol . $domainName . $path; 
+if ($path === '/' || $path === '\\') $path = '';
+$server_url = $protocol . $domainName . $path;
 
 $message = '';
 
@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ? OR username = ?");
             $stmt->execute([$email, $username]);
-            
+
             if ($stmt->fetchColumn() > 0) {
                 $message = 'Erreur : Cet email ou ce nom d\'utilisateur est déjà pris.';
             } else {
@@ -40,16 +40,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->execute([$username, $email, $hashed_password, $token]);
 
                 $verification_link = $server_url . "/verif.php?token=" . $token;
-                
+
                 $mail = new PHPMailer(true);
                 try {
                     $mail->isSMTP();
-                    $mail->Host       = 'localhost'; 
-                    $mail->SMTPAuth   = false;       
-                    $mail->Port       = 25;         
+                    $mail->Host       = 'localhost';
+                    $mail->SMTPAuth   = false;
+                    $mail->Port       = 25;
                     $mail->CharSet    = 'UTF-8';
 
-                    $mail->setFrom('no-reply@michael.rousseau.13h37.io', 'Music Community'); 
+                    $mail->setFrom('no-reply@michael.rousseau.13h37.io', 'Music Community');
                     $mail->addAddress($email, $username);
 
                     $mail->isHTML(true);
@@ -59,7 +59,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     $mail->send();
                     $message = 'Succès ! Vérifiez vos emails pour activer votre compte.';
-
                 } catch (Exception $e) {
                     error_log("Mail Error: " . $mail->ErrorInfo);
                     $message = "Compte créé, mais impossible d'envoyer l'email. Contactez l'admin.";
@@ -74,26 +73,107 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription - Music Community</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 90vh; background-color: #f4f4f9; margin: 0; }
-        .container { background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { text-align: center; color: #333; margin-bottom: 20px; }
-        form div { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; }
-        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; }
-        button:hover { background-color: #218838; }
-        .message { padding: 10px; margin-bottom: 20px; border-radius: 5px; text-align: center; font-size: 0.9rem; }
-        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .info { margin-top: 20px; text-align: center; font-size: 0.9em; color: #666; }
-        .info a { color: #007bff; text-decoration: none; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            background-color: #f4f4f9;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .info a {
+            color: #007bff;
+            text-decoration: none;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>Créer un compte</h2>
@@ -121,10 +201,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit">S'inscrire</button>
             </div>
         </form>
-        
+
         <div class="info">
-            <p>Déjà membre ? <a href="connexion.php">Connectez-vous</a></p>
+            <p>Déjà membre ?<a href="<?= BASE_URL ?>/login">Connectez-vous</a></p>
         </div>
     </div>
 </body>
+
 </html>

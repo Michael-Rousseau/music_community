@@ -1,6 +1,6 @@
 <header class="site-header">
     <div class="header-container wrapper">
-        
+
         <a href="<?= BASE_URL ?>/" class="logo">
             <div>
                 <img src="<?= BASE_URL ?>/assets/images/logo_tempo.png" alt="Logo Tempo">
@@ -8,9 +8,10 @@
         </a>
 
         <nav>
-            <?php if(\Core\Auth::check()): ?>
+            <?php if (\Core\Auth::check()): ?>
                 <a href="<?= BASE_URL ?>/m/new">Uploader une musique</a>
                 <a href="<?= BASE_URL ?>/profile">Profil</a>
+                <a href="<?= BASE_URL ?>/logout" class="btn primary">Deconnexion</a>
             <?php else: ?>
                 <a href="<?= BASE_URL ?>/login" class="btn primary">Connexion</a>
             <?php endif; ?>
@@ -19,7 +20,6 @@
 </header>
 
 <style>
-
     .site-header {
         position: fixed;
         top: 0;
@@ -43,18 +43,20 @@
         max-width: 100%;
         max-height: 100%;
     }
+
     .logo div {
         max-width: 100%;
         max-height: var(--header-height);
         display: flex;
         align-items: center;
         justify-content: center;
-        
+
     }
+
     .logo img {
-        height: calc(var(--header-height) - 2 * 10px); 
-        width: auto;                 
-        max-width: none;              
+        height: calc(var(--header-height) - 2 * 10px);
+        width: auto;
+        max-width: none;
         object-fit: contain;
         display: block;
     }
@@ -64,5 +66,4 @@
         display: flex;
         gap: 20px;
     }
-
 </style>

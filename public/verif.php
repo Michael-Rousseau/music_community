@@ -3,10 +3,10 @@
 require_once '../config/db.php';
 
 $message = '';
-$message_type = 'error'; 
+$message_type = 'error';
 
 if (isset($_GET['token']) && !empty($_GET['token'])) {
-    
+
     $token_recu = $_GET['token'];
 
     try {
@@ -15,7 +15,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 
         // if rowcount > 0 : token existed, we delete it -> success.
         // else:token didn't exist (or already validated account) -> fail.
-        
+
         if ($stmt->rowCount() > 0) {
             $message = 'Félicitations ! Votre compte a été vérifié avec succès.';
             $message_type = 'success';
@@ -25,13 +25,11 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
             $message = 'Ce lien de validation est invalide ou a déjà été utilisé.';
             $message_type = 'error';
         }
-
     } catch (PDOException $e) {
-        error_log("Erreur DB verif.php : " . $e->getMessage()); 
+        error_log("Erreur DB verif.php : " . $e->getMessage());
         $message = 'Une erreur technique est survenue. Veuillez contacter le support.';
         $message_type = 'error';
     }
-
 } else {
     $message = 'Lien incomplet. Vérifiez l\'URL dans votre email.';
     $message_type = 'error';
@@ -40,6 +38,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,30 +53,43 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
             min-height: 100vh;
             margin: 0;
         }
+
         .card {
             background: white;
             padding: 2.5rem;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             text-align: center;
             max-width: 450px;
             width: 90%;
         }
+
         h1 {
             margin-top: 0;
             color: #333;
             font-size: 1.5rem;
         }
+
         .status-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
             display: block;
         }
-        .success { color: #28a745; }
-        .error { color: #dc3545; }
-        
-        p { color: #666; line-height: 1.5; margin-bottom: 1.5rem; }
-        
+
+        .success {
+            color: #28a745;
+        }
+
+        .error {
+            color: #dc3545;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
         .btn {
             display: inline-block;
             background-color: #007bff;
@@ -88,9 +100,13 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
             font-weight: 600;
             transition: background-color 0.2s;
         }
-        .btn:hover { background-color: #0056b3; }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="card">
@@ -98,7 +114,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
             <span class="status-icon success">✅</span>
             <h1>Compte Activé</h1>
             <p><?php echo htmlspecialchars($message); ?></p>
-            <a href="connexion.php" class="btn">Se connecter</a>
+            <a href="<?= BASE_URL ?>/login" class="btn">Se connecter</a>
         <?php else: ?>
             <span class="status-icon error">⚠️</span>
             <h1>Erreur de validation</h1>
@@ -108,4 +124,5 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     </div>
 
 </body>
+
 </html>
