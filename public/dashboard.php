@@ -194,18 +194,19 @@ $my_musics = $stmt->fetchAll();
 <body>
 
 <header>
-        <a href="index.php" class="logo">
-            <img src="assets/images/logo_tempo.png" alt="Tempo">
-        </a>
+    <a href="index.php" class="logo"><img src="assets/images/logo_tempo.png" alt="Tempo"></a>
+    <div style="display:flex; align-items:center;">
+        <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
         <nav>
             <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                <a href="admin.php" class="btn btn-secondary" style="border-color:gold; color:#b58900; margin-right:5px;">Admin</a>
+                <a href="admin.php" class="btn btn-secondary" style="border-color:gold; color:#b58900;">Admin</a>
             <?php endif; ?>
             <a href="index.php" class="btn btn-secondary">Accueil</a>
-            <a href="logout.php" class="btn btn-primary" style="background-color: #ff6b6b; color: white;">Déconnexion</a>
+            <a href="logout.php" class="btn btn-primary" style="background:#ff6b6b; color:white;">Déconnexion</a>
         </nav>
-    </header>
-
+    </div>
+</header>
+<script src="assets/js/tempo.js"></script>
     <div class="dashboard-container">
         
         <div class="left-column">

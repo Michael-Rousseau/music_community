@@ -46,12 +46,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 
-    <header>
-        <a href="index.php" class="logo">
-            <img src="assets/images/logo_tempo.png" alt="Tempo">
-        </a>
+<header>
+    <a href="index.php" class="logo"><img src="assets/images/logo_tempo.png" alt="Tempo"></a>
+    <div style="display:flex; align-items:center;">
+        <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
         <a href="connexion.php" class="btn btn-primary">Connexion</a>
-    </header>
+    </div>
+</header>
+<script src="assets/js/tempo.js"></script>
 
     <div class="auth-container">
         <h1>Connexion</h1>

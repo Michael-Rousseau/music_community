@@ -26,11 +26,12 @@ $musics = $stmt->fetchAll();
 </head>
 <body>
 
-    <header>
-        <a href="index.php" class="logo">
-            <img src="assets/images/logo_tempo.png" alt="Tempo">
-        </a>
-<nav>
+<header>
+    <a href="index.php" class="logo"><img src="assets/images/logo_tempo.png" alt="Tempo"></a>
+    <div style="display:flex; align-items:center;">
+        <button id="themeToggle" class="theme-toggle" title="Changer de thème"><i class="fas fa-moon"></i></button>
+        
+        <nav>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
                     <a href="admin.php" class="btn btn-secondary" style="border-color:gold; color:#b58900; margin-right:5px;">Admin</a>
@@ -41,8 +42,9 @@ $musics = $stmt->fetchAll();
                 <a href="connexion.php" class="btn btn-primary">Connexion</a>
             <?php endif; ?>
         </nav>
-    </header>
-
+    </div>
+</header>
+<script src="assets/js/tempo.js"></script>
     <div class="hero">
         <h1>Accueil</h1>
         <form class="search-bar" method="GET" style="max-width: 400px; margin: 0 auto;">
