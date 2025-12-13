@@ -1,20 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
 :root {
-    --primary: #F7AAC3;      /* The Tempo Pink */
+    /* --- LIGHT THEME (Default) --- */
+    --primary: #F7AAC3;
     --primary-hover: #e08baa;
-    --dark: #2D2828;         /* The Text Black */
-    --light: #FFFFFF;
-    --bg: #f9f9f9;
-    --input-bg: #eff1f5;     /* Light blue/grey for inputs */
+    --dark: #2D2828;
+    --text-main: #2D2828;
+    --text-muted: #666666;
+    --bg-body: #ffffff;
+    --bg-card: #f9f9f9;
+    --bg-input: #eff1f5;
+    --border-color: #eeeeee;
+    --shadow: rgba(0,0,0,0.05);
+    
+    /* Player Specific */
+    --player-bg: #ffffff;
+    --player-overlay: rgba(255,255,255,0.8);
+    --timeline-bg: #e0e0e0;
+}
+
+body.dark-mode {
+    /* --- DARK THEME --- */
+    --primary: #F7AAC3;
+    --primary-hover: #ffc2d6;
+    --dark: #ffffff;
+    --text-main: #f0f0f0;
+    --text-muted: #aaaaaa;
+    --bg-body: #121212;
+    --bg-card: #1e1e1e;
+    --bg-input: #2a2a2a;
+    --border-color: #333333;
+    --shadow: rgba(0,0,0,0.3);
+
+    /* Player Specific */
+    --player-bg: #050508;
+    --player-overlay: rgba(5, 5, 10, 0.8);
+    --timeline-bg: #333333;
 }
 
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: var(--light);
-    color: var(--dark);
+    background-color: var(--bg-body);
+    color: var(--text-main);
     margin: 0;
     padding: 0;
+    transition: background 0.3s, color 0.3s;
 }
 
 /* --- HEADER --- */
@@ -23,19 +54,36 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background: white;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.3s;
 }
 
-.logo img {
-    height: 50px; /* Adjust based on your logo file */
-    width: auto;
+.logo img { height: 50px; width: auto; }
+
+/* --- DARK MODE TOGGLE --- */
+.theme-toggle {
+    background: none;
+    border: 2px solid var(--border-color);
+    color: var(--text-main);
+    padding: 8px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-right: 15px;
+    transition: 0.3s;
+}
+.theme-toggle:hover {
+    background: var(--bg-input);
+    color: var(--primary);
+    border-color: var(--primary);
 }
 
 /* --- BUTTONS --- */
 .btn {
     display: inline-block;
     padding: 10px 24px;
-    border-radius: 50px; /* Fully rounded pill shape */
+    border-radius: 50px;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.9rem;
@@ -43,129 +91,96 @@ header {
     cursor: pointer;
     border: none;
 }
+.btn-primary { background-color: var(--primary); color: #2D2828; } /* Always dark text on pink */
+.btn-primary:hover { background-color: var(--primary-hover); }
 
-.btn-primary {
-    background-color: var(--primary);
-    color: var(--dark);
-}
+.btn-secondary { background-color: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background-color: var(--bg-input); }
 
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-}
+/* --- FORMS --- */
+.auth-container { max-width: 500px; margin: 50px auto; padding: 20px; }
 
-.btn-secondary {
-    background-color: transparent;
-    color: var(--dark);
-    border: 1px solid #eee;
-}
-
-.btn-secondary:hover {
-    background-color: #f0f0f0;
-}
-
-/* --- FORMS (Login/Signup) --- */
-.auth-container {
-    max-width: 500px;
-    margin: 50px auto;
-    padding: 20px;
-}
-
-h1 {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 30px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"] {
+input, textarea, select {
     width: 100%;
     padding: 15px;
-    background-color: var(--input-bg);
-    border: none;
+    background-color: var(--bg-input);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
     box-sizing: border-box;
+    margin-bottom: 15px;
 }
+input:focus { outline: 2px solid var(--primary); border-color: transparent; }
 
-input:focus {
-    outline: 2px solid var(--primary);
-}
-
-button[type="submit"] {
-    width: 100%;
-    padding: 15px;
-    background-color: var(--primary);
-    color: var(--dark);
-    font-weight: 800;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-button[type="submit"]:hover {
-    background-color: var(--primary-hover);
-}
-
-/* --- GRID & CARDS (Home) --- */
-.hero {
-    text-align: center;
-    padding: 60px 20px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px 60px;
-}
-
+/* --- CARDS --- */
 .card {
-    background: white;
+    background: var(--bg-card);
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px var(--shadow);
+    transition: transform 0.3s ease, background 0.3s;
+}
+.card-img { height: 180px; background: var(--bg-input); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--text-muted); }
+.card-body { padding: 20px; }
+.card-title { font-weight: 800; margin: 0 0 5px 0; font-size: 1.2rem; color: var(--text-main); }
+.card-user { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
+
+/* --- PLAYER SPECIFIC (Re-skinning the 3D player) --- */
+#canvas-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 1;
+    background: var(--bg-body); /* Adapts to theme */
 }
 
-.card:hover {
-    transform: translateY(-5px);
+.hud-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
+    pointer-events: none; display: flex; flex-direction: column; justify-content: space-between;
+    padding: 40px; box-sizing: border-box;
 }
 
-.card-img {
-    height: 180px;
-    background: #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color: #ccc;
+.song-title {
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 900;
+    font-size: 3rem; 
+    margin: 0; 
+    text-transform: uppercase; 
+    color: var(--text-main);
+    text-shadow: 2px 2px 0px var(--primary);
 }
 
-.card-body {
-    padding: 20px;
+.bottom-bar {
+    pointer-events: auto; width: 100%; max-width: 800px; margin: 0 auto;
+    background: var(--bg-card); /* Adaptive background */
+    border: 1px solid var(--border-color); 
+    border-radius: 50px; padding: 15px 30px;
+    display: flex; align-items: center; gap: 20px; 
+    box-shadow: 0 5px 20px var(--shadow);
 }
 
-.card-title {
-    font-weight: 800;
-    margin: 0 0 5px 0;
-    font-size: 1.2rem;
+.play-btn {
+    background: var(--primary); width: 50px; height: 50px; border-radius: 50%; border:none;
+    color: #2D2828; font-size: 1.2rem; cursor: pointer; 
+    display: flex; align-items: center; justify-content: center; transition: 0.2s;
 }
+.play-btn:hover { transform: scale(1.1); }
 
-.card-user {
-    color: #888;
-    font-size: 0.9rem;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.progress-wrapper { flex-grow: 1; height: 8px; background: var(--bg-input); border-radius: 4px; cursor: pointer; position: relative; }
+.progress-fill { height: 100%; background: var(--primary); width: 0%; border-radius: 4px; position: relative; }
+
+.star { color: var(--bg-input); font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
+.star.filled { color: #FFD700; }
+.star:hover { color: #ffeebb; }
+
+/* Drawer */
+.comments-drawer {
+    position: fixed; top: 0; right: -450px; width: 400px; height: 100%; z-index: 100;
+    background: var(--bg-card); 
+    border-left: 1px solid var(--border-color); 
+    transition: right 0.4s; 
+    display: flex; flex-direction: column;
+    box-shadow: -5px 0 20px var(--shadow);
 }
+.comments-drawer.open { right: 0; }
+.comment-item { border-left: 3px solid var(--primary); padding-left: 10px; margin-bottom: 15px; }
+.comment-time { color: var(--primary); font-weight: bold; font-family: monospace; }
