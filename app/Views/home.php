@@ -5,7 +5,7 @@ ob_start();
 
 
 <?php
-session_start();
+/* session_start(); */
 require_once '../config/db.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) {
