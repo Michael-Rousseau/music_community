@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,7 +6,54 @@
     <link rel="stylesheet" href="/assets/css/tempo.css">
 </head>
 <body>
-<?php foreach ($musics as $m): ?>
-    <?php endforeach; ?>
+
+<header>
+    <a href="/" class="logo"><img src="/assets/images/logo_tempo.png" alt="Tempo"></a>
+    <div style="display:flex; align-items:center;">
+        <button id="themeToggle" class="theme-toggle" title="Changer de thème"><i class="fas fa-moon"></i></button>
+        
+        <nav>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                    <a href="/admin" class="btn btn-secondary" style="border-color:gold; color:#b58900; margin-right:5px;">Admin</a>
+                <?php endif; ?>
+                <a href="/dashboard" class="btn btn-primary">Mon Espace</a>
+                <a href="/logout" class="btn btn-secondary">Déconnexion</a>
+            <?php else: ?>
+                <a href="/login" class="btn btn-primary">Connexion</a>
+            <?php endif; ?>
+        </nav>
+    </div>
+</header>
+<script src="/assets/js/tempo.js"></script>
+
+    <div class="hero">
+        <h1>Accueil</h1>
+        <form class="search-bar" action="/" method="GET" style="max-width: 400px; margin: 0 auto;">
+            <input type="text" name="q" placeholder="Rechercher un titre..." value="<?= htmlspecialchars($search); ?>">
+        </form>
+    </div>
+
+    <div class="grid">
+        <?php foreach ($musics as $m): ?>
+            <div class="card">
+                <div class="card-img">
+                    <?php if(!empty($m['image']) && $m['image'] !== 'default_image.png'): ?>
+                         <img src="/uploads/images/<?= htmlspecialchars($m['image']) ?>" style="width:100%; height:100%; object-fit:cover;">
+                    <?php else: ?>
+                        💿
+                    <?php endif; ?>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title"><?= htmlspecialchars($m['title']); ?></h3>
+                    <div class="card-user">
+                        <span>par <?= htmlspecialchars($m['username']); ?></span>
+                    </div>
+                    <a href="/music?id=<?= $m['id']; ?>" class="btn btn-primary" style="display:block; text-align:center;">Écouter ▶</a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
 </body>
 </html>

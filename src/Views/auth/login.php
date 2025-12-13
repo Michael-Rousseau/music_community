@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Connexion - Tempo</title>
-    <link rel="stylesheet" href="assets/css/tempo.css">
+    <link rel="stylesheet" href="/assets/css/tempo.css">
 </head>
 <body>
 
 <header>
-    <a href="index.php" class="logo"><img src="assets/images/logo_tempo.png" alt="Tempo"></a>
+    <a href="/" class="logo"><img src="/assets/images/logo_tempo.png" alt="Tempo"></a>
     <div style="display:flex; align-items:center;">
         <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
-        <a href="connexion.php" class="btn btn-primary">Connexion</a>
+        <a href="/login" class="btn btn-primary">Connexion</a>
     </div>
 </header>
-<script src="assets/js/tempo.js"></script>
+<script src="/assets/js/tempo.js"></script>
 
     <div class="auth-container">
         <h1>Connexion</h1>
@@ -25,7 +25,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="connexion.php" method="POST">
+        <form action="/login" method="POST">
             <div class="form-group">
                 <input type="email" name="email" placeholder="Email" required>
             </div>
@@ -36,7 +36,7 @@
         </form>
 
         <p style="margin-top:20px; color:#666;">
-            Pas encore de compte ? <a href="inscription.php" style="color:var(--dark); font-weight:bold;">Inscrivez-vous</a>
+            Pas encore de compte ? <a href="/register" style="color:var(--dark); font-weight:bold;">Inscrivez-vous</a>
         </p>
     </div>
 

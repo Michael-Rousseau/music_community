@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Inscription - Tempo</title>
-    <link rel="stylesheet" href="assets/css/tempo.css">
+    <link rel="stylesheet" href="/assets/css/tempo.css">
 </head>
 <body>
 
     <header>
-        <a href="index.php" class="logo">
-            <img src="assets/images/logo_tempo.png" alt="Tempo">
+        <a href="/" class="logo">
+            <img src="/assets/images/logo_tempo.png" alt="Tempo">
         </a>
-        <a href="connexion.php" class="btn btn-primary">Connexion</a>
+        <a href="/login" class="btn btn-primary">Connexion</a>
     </header>
 
     <div class="auth-container">
@@ -23,7 +23,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="inscription.php" method="POST">
+        <form action="/register" method="POST">
             <div class="form-group">
                 <input type="email" name="email" placeholder="Email" required>
             </div>
@@ -37,7 +37,7 @@
         </form>
 
         <p style="margin-top:20px; color:#666;">
-            Déjà un compte ? <a href="connexion.php" style="color:var(--dark); font-weight:bold;">Connectez-vous</a>
+            Déjà un compte ? <a href="/login" style="color:var(--dark); font-weight:bold;">Connectez-vous</a>
         </p>
     </div>
 

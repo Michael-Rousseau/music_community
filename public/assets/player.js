@@ -22,7 +22,7 @@ window.toggleDrawer = function (show) {
 
 window.submitRating = function (val) {
   if (!window.isUserLoggedIn) {
-    window.location.href = "connexion.php";
+    window.location.href = "/login";
   } else {
     document.getElementById("ratingInput").value = val;
     document.getElementById("ratingForm").submit();

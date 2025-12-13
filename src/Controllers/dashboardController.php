@@ -6,6 +6,7 @@ use App\Models\Music;
 
 class DashboardController extends Controller {
     
+    // 1. LIST & UPLOAD (Existing)
     public function index() {
         if (!isset($_SESSION['user_id'])) $this->redirect('/login');
         
@@ -24,6 +25,7 @@ class DashboardController extends Controller {
                 $ext = pathinfo($_FILES['music_file']['name'], PATHINFO_EXTENSION);
                 if ($ext === 'mp3') {
                     $newFilename = uniqid() . ".mp3";
+                    // Correct path relative to src/Controllers/
                     $target = __DIR__ . '/../../public/uploads/mp3/' . $newFilename;
                     
                     if (!is_dir(dirname($target))) mkdir(dirname($target), 0777, true);
@@ -52,6 +54,7 @@ class DashboardController extends Controller {
         ]);
     }
 
+    // 2. EDIT MUSIC
     public function edit() {
         if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) $this->redirect('/dashboard');
         
@@ -59,14 +62,18 @@ class DashboardController extends Controller {
         $musicModel = new Music($pdo);
         $id = (int)$_GET['id'];
         
-        // Security: Ensure music belongs to user
+        // Security check: Does this music belong to the user?
         $music = $musicModel->findById($id);
-        if (!$music || $music['user_id'] != $_SESSION['user_id']) die("Accès interdit");
+        if (!$music || $music['user_id'] != $_SESSION['user_id']) {
+            die("Accès interdit");
+        }
 
+        // Handle Form Submit
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = trim($_POST['title']);
             $desc = trim($_POST['description']);
             $viz = $_POST['visibility'];
+            
             $musicModel->update($id, $_SESSION['user_id'], $title, $desc, $viz);
             $this->redirect('/dashboard');
         }
@@ -74,11 +81,13 @@ class DashboardController extends Controller {
         $this->render('dashboard/edit', ['music' => $music]);
     }
 
+    // 3. DELETE MUSIC
     public function delete() {
         if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) $this->redirect('/dashboard');
         
         $pdo = Database::getConnection();
         $musicModel = new Music($pdo);
+        
         $musicModel->delete((int)$_GET['id'], $_SESSION['user_id']);
         
         $this->redirect('/dashboard');
