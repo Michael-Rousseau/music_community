@@ -115,17 +115,66 @@ input, textarea, select {
 input:focus { outline: 2px solid var(--primary); border-color: transparent; }
 
 /* --- CARDS --- */
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.grid {
+    display: grid;
+    /* Create columns that are at least 250px wide, but share space equally */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+}
+
 .card {
     background: var(--bg-card);
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 10px 30px var(--shadow);
     transition: transform 0.3s ease, background 0.3s;
+    width: 100%; 
+    max-width: 350px; 
+    margin: 0 auto; /* Centers card in its grid cell */
+    display: flex;
+    flex-direction: column;
 }
-.card-img { height: 180px; background: var(--bg-input); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--text-muted); }
-.card-body { padding: 20px; }
-.card-title { font-weight: 800; margin: 0 0 5px 0; font-size: 1.2rem; color: var(--text-main); }
-.card-user { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
+
+.card-img {
+    height: 180px;
+    background: var(--bg-input);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem; 
+    color: var(--text-muted);
+}
+
+.card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-title {
+    font-weight: 800;
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-user {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
 
 #canvas-container {
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 1;

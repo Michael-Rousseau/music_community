@@ -30,8 +30,11 @@ $musics = $stmt->fetchAll();
         <a href="index.php" class="logo">
             <img src="assets/images/logo_tempo.png" alt="Tempo">
         </a>
-        <nav>
+<nav>
             <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                    <a href="admin.php" class="btn btn-secondary" style="border-color:gold; color:#b58900; margin-right:5px;">Admin</a>
+                <?php endif; ?>
                 <a href="dashboard.php" class="btn btn-primary">Mon Espace</a>
                 <a href="logout.php" class="btn btn-secondary">Déconnexion</a>
             <?php else: ?>

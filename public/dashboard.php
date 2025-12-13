@@ -193,11 +193,14 @@ $my_musics = $stmt->fetchAll();
 </head>
 <body>
 
-    <header>
+<header>
         <a href="index.php" class="logo">
             <img src="assets/images/logo_tempo.png" alt="Tempo">
         </a>
         <nav>
+            <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                <a href="admin.php" class="btn btn-secondary" style="border-color:gold; color:#b58900; margin-right:5px;">Admin</a>
+            <?php endif; ?>
             <a href="index.php" class="btn btn-secondary">Accueil</a>
             <a href="logout.php" class="btn btn-primary" style="background-color: #ff6b6b; color: white;">Déconnexion</a>
         </nav>
