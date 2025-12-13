@@ -5,7 +5,7 @@ require_once '../config/db.php';
 if (!isset($_GET['id'])) die("ID manquant");
 $music_id = (int)$_GET['id'];
 
-// --- 1. POST : AJOUTER COMMENTAIRE TEMPOREL ---
+// --- 1. POST : AJOUTER COMMENTAIRE ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($_SESSION['user_id'])) {
     $content = trim($_POST['comment']);
     $timestamp = isset($_POST['timestamp']) ? (int)$_POST['timestamp'] : 0;
@@ -70,19 +70,18 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
         
         <div class="top-bar" style="display:flex; justify-content:space-between; align-items:center;">
              <div>
-                 <a href="index.php" class="btn btn-secondary" style="border-radius:50px; padding:8px 20px;">
+                 <a href="index.php" class="btn btn-secondary" style="border-radius:50px; padding:8px 20px; background:var(--bg-card);">
                     <i class="fas fa-arrow-left"></i> Retour
                  </a>
              </div>
-             
              <div style="text-align:right;">
-                <button id="themeToggle" class="theme-toggle" title="Changer de thème">
+                <button id="themeToggle" class="theme-toggle" title="Changer de thème" style="background:var(--bg-card);">
                     <i class="fas fa-moon"></i>
                 </button>
              </div>
         </div>
 
-        <div style="position: absolute; top: 20%; right: 5%; text-align: right;">
+        <div class="song-info-container" style="position: absolute; top: 20%; right: 5%; text-align: right;">
             <h1 class="song-title"><?php echo htmlspecialchars($music['title']); ?></h1>
             <div style="color:var(--primary); letter-spacing:2px; font-weight:bold; font-size:1.2rem;">
                 <?php echo strtoupper(htmlspecialchars($music['username'])); ?>
@@ -95,7 +94,7 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
             </div>
         </div>
 
-        <button class="btn btn-secondary" onclick="toggleDrawer(true)" style="position:absolute; bottom:120px; right:40px;">
+        <button class="btn btn-secondary comments-trigger" onclick="toggleDrawer(true)" style="position:absolute; bottom:120px; right:40px; background:var(--bg-card);">
             <i class="fas fa-comment-alt"></i> Commentaires (<?php echo count($comments); ?>)
         </button>
 
@@ -118,8 +117,8 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
     
     <div class="comments-drawer <?php echo $openDrawer; ?>" id="drawer">
         <div class="drawer-header" style="padding:20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
-            <span style="font-weight:800;">TIMELINE</span>
-            <i class="fas fa-times" style="cursor:pointer;" onclick="toggleDrawer(false)"></i>
+            <span style="font-weight:800; color:var(--text-main);">TIMELINE</span>
+            <i class="fas fa-times" style="cursor:pointer; color:var(--text-main);" onclick="toggleDrawer(false)"></i>
         </div>
         
         <div class="comments-list" id="commentsList" style="flex:1; overflow-y:auto; padding:20px;">
@@ -155,7 +154,6 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
 
     <script>
         const commentsData = <?php echo json_encode($comments); ?>;
-        // FIX: Assign to window so module can see it
         window.isUserLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
     </script>
 

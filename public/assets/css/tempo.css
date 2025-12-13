@@ -127,16 +127,26 @@ input:focus { outline: 2px solid var(--primary); border-color: transparent; }
 .card-title { font-weight: 800; margin: 0 0 5px 0; font-size: 1.2rem; color: var(--text-main); }
 .card-user { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
 
-/* --- PLAYER SPECIFIC (Re-skinning the 3D player) --- */
 #canvas-container {
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 1;
-    background: var(--bg-body); /* Adapts to theme */
+    background: var(--bg-body);
 }
 
 .hud-layer {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
-    pointer-events: none; display: flex; flex-direction: column; justify-content: space-between;
+    pointer-events: none; /* Allow clicks to pass through empty space */
+    display: flex; flex-direction: column; justify-content: space-between;
     padding: 40px; box-sizing: border-box;
+}
+
+.hud-layer > div, 
+.hud-layer > button,
+.hud-layer form,
+.top-bar, 
+.bottom-bar,
+.song-info-container,
+.comments-trigger {
+    pointer-events: auto !important; 
 }
 
 .song-title {
@@ -150,8 +160,8 @@ input:focus { outline: 2px solid var(--primary); border-color: transparent; }
 }
 
 .bottom-bar {
-    pointer-events: auto; width: 100%; max-width: 800px; margin: 0 auto;
-    background: var(--bg-card); /* Adaptive background */
+    width: 100%; max-width: 800px; margin: 0 auto;
+    background: var(--bg-card);
     border: 1px solid var(--border-color); 
     border-radius: 50px; padding: 15px 30px;
     display: flex; align-items: center; gap: 20px; 
@@ -168,6 +178,7 @@ input:focus { outline: 2px solid var(--primary); border-color: transparent; }
 .progress-wrapper { flex-grow: 1; height: 8px; background: var(--bg-input); border-radius: 4px; cursor: pointer; position: relative; }
 .progress-fill { height: 100%; background: var(--primary); width: 0%; border-radius: 4px; position: relative; }
 
+/* Stars */
 .star { color: var(--bg-input); font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
 .star.filled { color: #FFD700; }
 .star:hover { color: #ffeebb; }
@@ -180,6 +191,7 @@ input:focus { outline: 2px solid var(--primary); border-color: transparent; }
     transition: right 0.4s; 
     display: flex; flex-direction: column;
     box-shadow: -5px 0 20px var(--shadow);
+    pointer-events: auto; /* Ensure drawer is clickable */
 }
 .comments-drawer.open { right: 0; }
 .comment-item { border-left: 3px solid var(--primary); padding-left: 10px; margin-bottom: 15px; }
