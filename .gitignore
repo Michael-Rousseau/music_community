@@ -1,5 +1,4 @@
 phpMyAdmin/
 vendor/
 uploads/
-composer.json
 composer.lock
