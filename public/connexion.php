@@ -1,16 +1,14 @@
 <?php
 session_start();
-
 require_once '../config/db.php';
 
 $message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
+    // ... (Your existing login logic remains the same) ...
     if (empty($_POST['email']) || empty($_POST['password'])) {
         $message = 'Erreur : Email et mot de passe requis.';
     } else {
-        
         $email_posted = trim($_POST['email']);
         $password_posted = $_POST['password'];
 
@@ -19,88 +17,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute([$email_posted]);
             $user = $stmt->fetch(); 
 
-            if ($user) {
-                
-                if (password_verify($password_posted, $user['password'])) {
-
-                    if ($user['token'] === NULL) {
-                        
-                        session_regenerate_id(true);
-                        
-                        $_SESSION['user_id'] = $user['id'];
-                        $_SESSION['user_name'] = $user['username']; 
-                        $_SESSION['user_role'] = $user['role'];
-                        
-                        header("Location: index.php"); 
-                        exit;
-
-                    } else {
-                        $message = 'Erreur : Votre compte n\'est pas encore validé. Vérifiez vos emails.';
-                    }
+            if ($user && password_verify($password_posted, $user['password'])) {
+                if ($user['token'] === NULL) {
+                    session_regenerate_id(true);
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['user_name'] = $user['username']; 
+                    $_SESSION['user_role'] = $user['role'];
+                    header("Location: index.php"); 
+                    exit;
                 } else {
-                    $message = 'Erreur : Email ou mot de passe incorrect.';
+                    $message = 'Erreur : Compte non validé.';
                 }
             } else {
-                $message = 'Erreur : Email ou mot de passe incorrect.';
+                $message = 'Erreur : Identifiants incorrects.';
             }
-
         } catch (PDOException $e) {
-            $message = 'Erreur technique lors de la connexion.';
+            $message = 'Erreur technique.';
         }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Connexion - Music Community</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 90vh; background-color: #f4f4f9; margin: 0; }
-        .container { background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { text-align: center; color: #333; margin-bottom: 20px; }
-        form div { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; }
-        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; }
-        button:hover { background-color: #218838; }
-        .message { padding: 10px; margin-bottom: 20px; border-radius: 5px; text-align: center; font-size: 0.9rem; }
-        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .info { margin-top: 20px; text-align: center; font-size: 0.9em; color: #666; }
-        .info a { color: #007bff; text-decoration: none; }
-        .info a:hover { text-decoration: underline; }
-    </style>
+    <title>Connexion - Tempo</title>
+    <link rel="stylesheet" href="assets/css/tempo.css">
 </head>
 <body>
-    <div class="container">
-        <h2>Se connecter</h2>
+
+    <header>
+        <a href="index.php" class="logo">
+            <img src="assets/images/logo_tempo.png" alt="Tempo">
+        </a>
+        <a href="connexion.php" class="btn btn-primary">Connexion</a>
+    </header>
+
+    <div class="auth-container">
+        <h1>Connexion</h1>
 
         <?php if (!empty($message)): ?>
-            <div class="message <?php echo (strpos($message, 'Erreur') !== false) ? 'error' : 'success'; ?>">
+            <div style="background:#f8d7da; color:#721c24; padding:10px; border-radius:8px; margin-bottom:20px;">
                 <?php echo htmlspecialchars($message); ?>
             </div>
         <?php endif; ?>
 
         <form action="connexion.php" method="POST">
-            <div>
-                <label for="email">Email :</label>
-                <input type="email" id="email" name="email" required>
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Email" required>
             </div>
-            <div>
-                <label for="password">Mot de passe :</label>
-                <input type="password" id="password" name="password" required>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Mot de passe" required>
             </div>
-            <div>
-                <button type="submit">Connexion</button>
-            </div>
+            <button type="submit">Connexion</button>
         </form>
 
-        <div class="info">
-            <p>Pas encore de compte ? <a href="inscription.php">Inscrivez-vous</a></p>
-        </div>
+        <p style="margin-top:20px; color:#666;">
+            Pas encore de compte ? <a href="inscription.php" style="color:var(--dark); font-weight:bold;">Inscrivez-vous</a>
+        </p>
     </div>
+
 </body>
 </html>
