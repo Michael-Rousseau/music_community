@@ -50,8 +50,8 @@ use Core\Router;
 $router = new Router();
 
 // Public routes
-$router->get('/', 'Controllers\HomeController@index');
-$router->get('', 'Controllers\HomeController@index');
+$router->get('/', function() use ($pdo) { (new Controllers\HomeController($pdo))->index(); });
+$router->get('', function() use ($pdo) { (new Controllers\HomeController($pdo))->index(); });
 $router->get('/m/(\d+)', 'Controllers\MusicController@show');
 
 // Auth routes
