@@ -11,12 +11,17 @@ class AuthController
 {
     private $pdo;
     private $userModel;
-    private $server_url = 'https://marie-lou.allain.13h37.io/music_community'; // change to your domain
+    // FIX: Generate dynamic server URL based on current request
+    private $server_url; 
 
     public function __construct($pdo)
     {
         $this->pdo = $pdo;
         $this->userModel = new User($pdo);
+
+        // Detect protocol and domain dynamically
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+        $this->server_url = $protocol . $_SERVER['HTTP_HOST'] . BASE_URL;
     }
 
     public function showLogin()
@@ -26,8 +31,6 @@ class AuthController
 
     public function login()
     {
-
-
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         $message = '';
@@ -44,8 +47,8 @@ class AuthController
             if ($this->userModel->validatePassword($user, $password)) {
                 if ($user['token'] === null) {
                     Auth::login($user);
-                    header("Location: " . BASE_URL . "/profile");
-
+                    // FIX: Ensure correct redirection
+                    header("Location: " . rtrim(BASE_URL, '/') . "/profile");
                     exit;
                 } else {
                     $message = "Votre compte n'est pas encore vérifié. Vérifiez votre email.";
@@ -97,19 +100,18 @@ class AuthController
 
         $token = $this->userModel->create($email, $username, $password);
 
+        // FIX: Removed the "echo $token" that was breaking the layout
 
-        // send email
         $mail = new PHPMailer(true);
-        $verification_link = $this->server_url . "/verify?token=$token";
-
-        echo "$token";
+        // Clean URL construction
+        $verification_link = rtrim($this->server_url, '/') . "/verify?token=$token";
 
         try {
             $mail->isSMTP();
             $mail->Host = 'localhost';
             $mail->SMTPAuth = false;
-            $mail->Port = 25;
-            $mail->setFrom('no-reply@example.com', 'Music Community');
+            $mail->Port = 1025; // Often 1025 for local dev (Mailhog), or 25
+            $mail->setFrom('no-reply@music-community.local', 'Music Community');
             $mail->addAddress($email, $username);
             $mail->isHTML(true);
             $mail->Subject = 'Vérifiez votre compte';
@@ -118,7 +120,7 @@ class AuthController
             $mail->send();
             $message = 'Inscription réussie ! Vérifiez votre email pour activer votre compte.';
         } catch (Exception $e) {
-            $message = "Erreur lors de l'envoi de l'email : " . $mail->ErrorInfo;
+            $message = "Compte créé, mais erreur d'email : " . $mail->ErrorInfo;
         }
 
         include __DIR__ . '/../Views/auth/signup.php';
@@ -140,9 +142,7 @@ class AuthController
     public function logout()
     {
         Auth::logout();
-        header("Location: " . BASE_URL . "/");
-        require_once __DIR__ . '/../../config/db.php';
-
+        header("Location: " . rtrim(BASE_URL, '/') . "/");
         exit;
     }
 }
