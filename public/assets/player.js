@@ -1,11 +1,9 @@
-// public/assets/player.js
 import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
-// Global Functions
 window.toggleDrawer = function (show) {
   const d = document.getElementById("drawer");
   const o = document.getElementById("overlay");
@@ -50,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   playBtn.addEventListener("click", () => {
     if (!context) initAudioContext();
+
     if (isPlaying) {
       audio.pause();
       icon.classList.replace("fa-pause", "fa-play");
@@ -75,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
         marker.style.top = "-5px";
         marker.style.width = "4px";
         marker.style.height = "18px";
-        marker.style.background = "var(--primary)"; // Use CSS variable
+        marker.style.background = "var(--primary)";
         marker.style.left = left + "%";
         marker.style.borderRadius = "2px";
         barCont.appendChild(marker);
@@ -105,34 +104,32 @@ document.addEventListener("DOMContentLoaded", () => {
   init3D();
 });
 
-// ... (3D Visualizer Logic) ...
-
 let scene, camera, renderer, geometry, mesh, context, analyser, dataArray;
 let clock, bloomComposer;
 let mouseX = 0,
   mouseY = 0;
 
 const params = {
-  red: 0.96, // #F7AAC3 -> Pinkish
-  green: 0.66,
-  blue: 0.76,
-  threshold: 0.2, // Lower threshold to make it glow on light backgrounds too
-  strength: 0.8,
+  red: 1.0,
+  green: 0.4,
+  blue: 0.8,
+  threshold: 0.1,
+  strength: 0.4,
   radius: 0.5,
 };
 
-// ... (Vertex Shader - same as before) ...
 const vertexShader = `
   uniform float u_time;
   uniform float u_frequency;
-  // ... (Keep existing complex noise logic) ...
-  // [Paste the noise logic from your previous file here for brevity, logic doesn't change]
-  
+  varying float vNoise; // Pass noise to fragment shader
+
+  // Simplex Noise (Standard Implementation)
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec4 permute(vec4 x) { return mod289(((x*34.0)+10.0)*x); }
   vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
   vec3 fade(vec3 t) { return t*t*t*(t*(t*6.0-15.0)+10.0); }
+
   float pnoise(vec3 P, vec3 rep) {
     vec3 Pi0 = mod(floor(P), rep);
     vec3 Pi1 = mod(Pi0 + vec3(1.0), rep);
@@ -190,6 +187,10 @@ const vertexShader = `
 
   void main() {
     float noise = 3.0 * pnoise(position + u_time, vec3(10.0));
+    // Save noise for Fragment Shader
+    vNoise = noise; 
+    
+    // Displacement
     float displacement = (u_frequency / 30.0) * (noise / 10.0);
     vec3 newPosition = position + normal * displacement;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
@@ -200,16 +201,20 @@ const fragmentShader = `
   uniform float u_red;
   uniform float u_blue;
   uniform float u_green;
+  varying float vNoise; // Receive noise
 
   void main() {
-    // CHANGED: Solid pinkish color
-    gl_FragColor = vec4(vec3(u_red, u_green, u_blue), 1.0);
+    // Dynamic color based on noise (Brighter on peaks, darker in valleys)
+    vec3 color = vec3(u_red, u_green, u_blue);
+    float brightness = 1.0 + vNoise * 0.3; 
+    
+    gl_FragColor = vec4(color * brightness, 1.0);
   }
 `;
 
 function init3D() {
   scene = new THREE.Scene();
-  // ... (Camera setup - same) ...
+
   camera = new THREE.PerspectiveCamera(
     45,
     window.innerWidth / window.innerHeight,
@@ -225,7 +230,7 @@ function init3D() {
 
   const container = document.getElementById("canvas-container");
   if (container) {
-    container.innerHTML = ""; // Clear existing
+    container.innerHTML = "";
     container.appendChild(renderer.domElement);
   }
 
@@ -254,11 +259,12 @@ function init3D() {
     uniforms,
     vertexShader,
     fragmentShader,
+    wireframe: true,
   });
-  // CHANGED: Use Sphere instead of Icosahedron for smoother blob
-  geometry = new THREE.IcosahedronGeometry(4, 30);
+
+  geometry = new THREE.IcosahedronGeometry(4, 2);
+
   mesh = new THREE.Mesh(geometry, mat);
-  mesh.material.wireframe = true;
   scene.add(mesh);
 
   clock = new THREE.Clock();
@@ -281,7 +287,7 @@ function initAudioContext() {
   const src = context.createMediaElementSource(audio);
   src.connect(analyser);
   analyser.connect(context.destination);
-  analyser.fftSize = 32;
+  analyser.fftSize = 256; // Adjusted FFT size for better visual response
   dataArray = new Uint8Array(analyser.frequencyBinCount);
 }
 
