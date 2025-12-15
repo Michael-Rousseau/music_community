@@ -89,7 +89,9 @@
                         <span class="comment-time">[<?= gmdate("i:s", $c['timestamp']); ?>]</span>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <?php if (!empty($c['avatar']) && $c['avatar'] !== 'default_avatar.png'): ?>
-                                <img src="/uploads/avatars/<?= htmlspecialchars($c['avatar']); ?>" 
+                                <img src="/uploads/avatars/<?= htmlspecialchars($music['avatar']); ?>" 
+                                    alt="<?= htmlspecialchars($music['username']); ?>"
+                                        width="40" height="40"
                                      style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
                             <?php else: ?>
                                 <div style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:#2D2828; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:bold;">

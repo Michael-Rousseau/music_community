@@ -2,7 +2,14 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Tempo - Accueil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="description" content="Tempo - Communauté musicale de partage de MP3."> <title>Tempo - Accueil</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+
     <link rel="stylesheet" href="/assets/css/tempo.css">
 </head>
 <body>
@@ -11,7 +18,7 @@
     <a href="/" class="logo"><img src="/assets/images/logo_tempo.png" alt="Tempo"></a>
     <div style="display:flex; align-items:center;">
         <button id="themeToggle" class="theme-toggle" title="Changer de thème"><i class="fas fa-moon"></i></button>
-        
+
         <nav>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
@@ -37,13 +44,17 @@
     <div class="grid">
         <?php foreach ($musics as $m): ?>
             <div class="card">
-                <div class="card-img">
-                    <?php if(!empty($m['image']) && $m['image'] !== 'default_image.png'): ?>
-                         <img src="/uploads/images/<?= htmlspecialchars($m['image']) ?>" style="width:100%; height:100%; object-fit:cover;">
-                    <?php else: ?>
-                        💿
-                    <?php endif; ?>
-                </div>
+<div class="card-img">
+    <?php if(!empty($m['image']) && $m['image'] !== 'default_image.png'): ?>
+         <img src="/uploads/images/<?= htmlspecialchars($m['image']) ?>" 
+              alt="Cover of <?= htmlspecialchars($m['title']); ?>"
+              loading="lazy"
+              width="250" height="180"
+              style="width:100%; height:100%; object-fit:cover;">
+    <?php else: ?>
+        💿
+    <?php endif; ?>
+</div>
                 <div class="card-body">
                     <h3 class="card-title"><?= htmlspecialchars($m['title']); ?></h3>
                     <div class="card-user" style="display:flex; align-items:center; gap:8px;">
