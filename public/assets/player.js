@@ -123,8 +123,8 @@ let mouseX = 0,
 
 const params = {
   red: 1.0,
-  green: 1.0,
-  blue: 1.0,
+  green: 0.6,
+  blue: 0.1,
   threshold: 0.5,
   strength: 0.5,
   radius: 0.8,
