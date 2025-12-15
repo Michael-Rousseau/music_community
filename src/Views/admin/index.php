@@ -102,7 +102,7 @@
                             <th>Utilisateur</th>
                             <th>Email</th>
                             <th>Rôle</th>
-                            <th style="text-align:right;">Actions</th>
+                            <th style="text-align:center;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -124,11 +124,22 @@
                                     <span style="color:var(--text-muted); font-size:0.9rem;">Membre</span>
                                 <?php endif; ?>
                             </td>
-                            <td style="text-align:right;">
-                                <?php if($u['role'] !== 'admin'): ?>
-                                    <a href="/admin?del_user=<?= $u['id']; ?>" class="btn btn-danger btn-sm" style="color:#dc3545;" onclick="return confirm('Bannir cet utilisateur ?');">
-                                        <i class="fas fa-ban"></i> Bannir
-                                    </a>
+                            <td style="text-align:center;">
+                                <?php if($u['id'] != $_SESSION['user_id']): // Can't modify your own role ?>
+                                    <?php if($u['role'] === 'admin'): ?>
+                                        <a href="/admin?revoke_admin=<?= $u['id']; ?>" class="btn btn-secondary btn-sm" style="color:#ff9800; margin-right:5px;" onclick="return confirm('Retirer les droits admin à <?= htmlspecialchars($u['username']); ?> ?');" title="Révoquer admin">
+                                            <i class="fas fa-user-minus"></i> Révoquer
+                                        </a>
+                                    <?php else: ?>
+                                        <a href="/admin?promote_admin=<?= $u['id']; ?>" class="btn btn-secondary btn-sm" style="color:#28a745; margin-right:5px;" onclick="return confirm('Promouvoir <?= htmlspecialchars($u['username']); ?> en admin ?');" title="Promouvoir admin">
+                                            <i class="fas fa-user-shield"></i> Promouvoir
+                                        </a>
+                                        <a href="/admin?del_user=<?= $u['id']; ?>" class="btn btn-danger btn-sm" style="color:#dc3545;" onclick="return confirm('Bannir cet utilisateur ?');">
+                                            <i class="fas fa-ban"></i> Bannir
+                                        </a>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <span style="color:var(--text-muted); font-size:0.85rem; font-style:italic;">Vous</span>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -150,7 +161,7 @@
                             <th>Titre</th>
                             <th>Auteur</th>
                             <th>Date</th>
-                            <th style="text-align:right;">Actions</th>
+                            <th style="text-align:center;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -163,7 +174,7 @@
                             <td style="color:var(--text-muted); font-size:0.85rem;">
                                 <?= date('d/m/Y', strtotime($m['created_at'])); ?>
                             </td>
-                            <td style="text-align:right;">
+                            <td style="text-align:center;">
                                 <a href="/music?id=<?= $m['id']; ?>" target="_blank" class="btn btn-secondary btn-sm" style="margin-right:5px;">
                                     <i class="fas fa-external-link-alt"></i>
                                 </a>

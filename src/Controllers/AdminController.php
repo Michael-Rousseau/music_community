@@ -18,9 +18,32 @@ class AdminController extends Controller {
 
         // Handle Actions
         if (isset($_GET['del_user'])) {
-            $userModel->delete((int)$_GET['del_user']);
+            $userId = (int)$_GET['del_user'];
+            // Prevent deleting yourself
+            if ($userId != $_SESSION['user_id']) {
+                $userModel->delete($userId);
+            }
             $this->redirect('/admin');
         }
+        
+        if (isset($_GET['promote_admin'])) {
+            $userId = (int)$_GET['promote_admin'];
+            // Prevent promoting yourself (you're already admin)
+            if ($userId != $_SESSION['user_id']) {
+                $userModel->updateRole($userId, 'admin');
+            }
+            $this->redirect('/admin');
+        }
+        
+        if (isset($_GET['revoke_admin'])) {
+            $userId = (int)$_GET['revoke_admin'];
+            // Prevent revoking yourself
+            if ($userId != $_SESSION['user_id']) {
+                $userModel->updateRole($userId, 'user');
+            }
+            $this->redirect('/admin');
+        }
+        
         if (isset($_GET['del_music'])) {
             $musicModel->deleteByAdmin((int)$_GET['del_music']);
             $this->redirect('/admin');
