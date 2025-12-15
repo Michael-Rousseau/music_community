@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="description" content="Tempo - Communauté musicale de partage de MP3."> <title>Tempo - Accueil</title>
+    <link rel="preload" href="/assets/css/tempo.css" as="style">
+    <link rel="stylesheet" href="/assets/css/tempo.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-
-    <link rel="stylesheet" href="/assets/css/tempo.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
 </head>
 <body>
 
 <header>
-    <a href="/" class="logo"><img src="/assets/images/logo_tempo.png" alt="Tempo"></a>
+<a href="/" class="logo">
+    <img src="/assets/images/logo_tempo.png" alt="Tempo" width="150" height="50">
+</a>
     <div style="display:flex; align-items:center;">
         <button id="themeToggle" class="theme-toggle" title="Changer de thème"><i class="fas fa-moon"></i></button>
 

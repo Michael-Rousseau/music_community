@@ -8,9 +8,9 @@
 <body>
 
     <header>
-        <a href="/" class="logo">
-            <img src="/assets/images/logo_tempo.png" alt="Tempo">
-        </a>
+<a href="/" class="logo">
+    <img src="/assets/images/logo_tempo.png" alt="Tempo" width="150" height="50">
+</a>
         <a href="/login" class="btn btn-primary">Connexion</a>
     </header>
 

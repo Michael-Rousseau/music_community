@@ -62,9 +62,9 @@
 <body>
 
     <header>
-        <a href="/" class="logo">
-            <img src="/assets/images/logo_tempo.png" alt="Tempo">
-        </a>
+<a href="/" class="logo">
+    <img src="/assets/images/logo_tempo.png" alt="Tempo" width="150" height="50">
+</a>
         <div style="display:flex; align-items:center;">
             <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
             <nav>
