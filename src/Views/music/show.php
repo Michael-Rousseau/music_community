@@ -36,8 +36,18 @@
 
         <div class="song-info-container" style="position: absolute; top: 20%; right: 5%; text-align: right;">
             <h1 class="song-title"><?= htmlspecialchars($music['title']); ?></h1>
-            <div style="color:var(--primary); letter-spacing:2px; font-weight:bold; font-size:1.2rem;">
-                <?= strtoupper(htmlspecialchars($music['username'])); ?>
+            <div style="display:flex; align-items:center; justify-content:flex-end; gap:10px; margin-top:10px;">
+                <?php if (!empty($music['avatar']) && $music['avatar'] !== 'default_avatar.png'): ?>
+                    <img src="/uploads/avatars/<?= htmlspecialchars($music['avatar']); ?>" 
+                         style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:3px solid var(--primary);">
+                <?php else: ?>
+                    <div style="width:40px; height:40px; border-radius:50%; background:var(--primary); color:#2D2828; display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:bold; border:3px solid var(--primary);">
+                        <?= strtoupper(substr($music['username'], 0, 1)); ?>
+                    </div>
+                <?php endif; ?>
+                <div style="color:var(--primary); letter-spacing:2px; font-weight:bold; font-size:1.2rem;">
+                    <?= strtoupper(htmlspecialchars($music['username'])); ?>
+                </div>
             </div>
             
             <div class="rating-stars" id="starContainer" style="margin-top:10px;">
@@ -75,11 +85,21 @@
         <div class="comments-list" id="commentsList" style="flex:1; overflow-y:auto; padding:20px;">
             <?php foreach($comments as $c): ?>
                 <div class="comment-item" onclick="jumpTo(<?= $c['timestamp']; ?>)" style="cursor:pointer;">
-                    <div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;">
                         <span class="comment-time">[<?= gmdate("i:s", $c['timestamp']); ?>]</span>
-                        <span style="font-weight:bold; color:var(--text-main);"><?= htmlspecialchars($c['username']); ?></span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <?php if (!empty($c['avatar']) && $c['avatar'] !== 'default_avatar.png'): ?>
+                                <img src="/uploads/avatars/<?= htmlspecialchars($c['avatar']); ?>" 
+                                     style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                            <?php else: ?>
+                                <div style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:#2D2828; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:bold;">
+                                    <?= strtoupper(substr($c['username'], 0, 1)); ?>
+                                </div>
+                            <?php endif; ?>
+                            <span style="font-weight:bold; color:var(--text-main);"><?= htmlspecialchars($c['username']); ?></span>
+                        </div>
                     </div>
-                    <div style="color:var(--text-muted); margin-top:3px;"><?= htmlspecialchars($c['content']); ?></div>
+                    <div style="color:var(--text-muted); margin-top:3px; margin-left:8px;"><?= htmlspecialchars($c['content']); ?></div>
                 </div>
             <?php endforeach; ?>
         </div>

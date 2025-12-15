@@ -46,7 +46,15 @@
                 </div>
                 <div class="card-body">
                     <h3 class="card-title"><?= htmlspecialchars($m['title']); ?></h3>
-                    <div class="card-user">
+                    <div class="card-user" style="display:flex; align-items:center; gap:8px;">
+                        <?php if (!empty($m['avatar']) && $m['avatar'] !== 'default_avatar.png'): ?>
+                            <img src="/uploads/avatars/<?= htmlspecialchars($m['avatar']); ?>" 
+                                 style="width:24px; height:24px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                        <?php else: ?>
+                            <div style="width:24px; height:24px; border-radius:50%; background:var(--primary); color:#2D2828; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:bold;">
+                                <?= strtoupper(substr($m['username'], 0, 1)); ?>
+                            </div>
+                        <?php endif; ?>
                         <span>par <?= htmlspecialchars($m['username']); ?></span>
                     </div>
                     <a href="/music?id=<?= $m['id']; ?>" class="btn btn-primary" style="display:block; text-align:center;">Écouter ▶</a>

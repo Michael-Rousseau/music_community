@@ -15,7 +15,37 @@ class DashboardController extends Controller {
         $message = '';
         $message_type = '';
 
-        // Handle Upload
+        // Handle Avatar Upload
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'upload_avatar') {
+            if (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] === 0) {
+                $ext = strtolower(pathinfo($_FILES['avatar_file']['name'], PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+                
+                if (in_array($ext, $allowed)) {
+                    $newFilename = 'avatar_' . $_SESSION['user_id'] . '_' . time() . '.' . $ext;
+                    $target = __DIR__ . '/../../public/uploads/avatars/' . $newFilename;
+                    
+                    if (!is_dir(dirname($target))) mkdir(dirname($target), 0777, true);
+
+                    if (move_uploaded_file($_FILES['avatar_file']['tmp_name'], $target)) {
+                        // Update database
+                        $stmt = $pdo->prepare("UPDATE users SET avatar = ? WHERE id = ?");
+                        $stmt->execute([$newFilename, $_SESSION['user_id']]);
+                        
+                        $message = "Photo de profil mise à jour !";
+                        $message_type = "success";
+                    } else {
+                        $message = "Erreur lors de l'upload.";
+                        $message_type = "error";
+                    }
+                } else {
+                    $message = "Format invalide (JPG, PNG, GIF uniquement).";
+                    $message_type = "error";
+                }
+            }
+        }
+
+        // Handle Music Upload
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'upload') {
             $title = trim($_POST['title']);
             $desc = trim($_POST['description']);
@@ -47,10 +77,16 @@ class DashboardController extends Controller {
 
         $myMusics = $musicModel->findAllByUser($_SESSION['user_id']);
         
+        // Get user avatar
+        $stmt = $pdo->prepare("SELECT avatar FROM users WHERE id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $user_avatar = $stmt->fetchColumn();
+        
         $this->render('dashboard/index', [
             'my_musics' => $myMusics,
             'message' => $message,
-            'message_type' => $message_type
+            'message_type' => $message_type,
+            'user_avatar' => $user_avatar
         ]);
     }
 

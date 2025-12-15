@@ -12,7 +12,7 @@ class Database {
             $host = 'localhost';
             $db   = 'music_community';
             $user = 'root';
-            $pass = 'Collector10'; 
+            $pass = 'Tempo528491'; 
 
             try {
                 self::$pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass, [

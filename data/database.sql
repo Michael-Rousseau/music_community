@@ -30,6 +30,7 @@ CREATE TABLE comments (
     user_id INT NOT NULL,
     music_id INT NOT NULL,
     content TEXT NOT NULL,
+    timestamp INT DEFAULT 0,
     visibility ENUM('visible', 'hidden') DEFAULT 'visible',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     answer_to INT DEFAULT NULL, 

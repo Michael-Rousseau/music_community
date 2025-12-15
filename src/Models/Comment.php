@@ -11,7 +11,7 @@ class Comment {
     }
 
     public function getAllForMusic($musicId) {
-        $stmt = $this->pdo->prepare("SELECT c.*, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.music_id = ? ORDER BY c.timestamp ASC");
+        $stmt = $this->pdo->prepare("SELECT c.*, u.username, u.avatar FROM comments c JOIN users u ON c.user_id = u.id WHERE c.music_id = ? ORDER BY c.timestamp ASC");
         $stmt->execute([$musicId]);
         return $stmt->fetchAll();
     }

@@ -28,7 +28,7 @@ class Music {
 
     // For Single Music Page
     public function findById($id) {
-        $stmt = $this->pdo->prepare("SELECT m.*, u.username FROM musics m JOIN users u ON m.user_id = u.id WHERE m.id = ?");
+        $stmt = $this->pdo->prepare("SELECT m.*, u.username, u.avatar FROM musics m JOIN users u ON m.user_id = u.id WHERE m.id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }

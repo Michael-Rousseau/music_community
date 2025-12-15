@@ -45,28 +45,43 @@
             
             <div class="card" style="text-align:center; margin-bottom: 30px; width: 100%; max-width: none;">
                 <div class="card-body">
-                    <div class="avatar-circle">
-                        <?= strtoupper(substr($_SESSION['user_name'], 0, 1)); ?>
-                    </div>
+                    <?php if (!empty($user_avatar) && $user_avatar !== 'default_avatar.png'): ?>
+                        <img src="/uploads/avatars/<?= htmlspecialchars($user_avatar); ?>" 
+                             style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px; display: block; border: 3px solid var(--primary);">
+                    <?php else: ?>
+                        <div class="avatar-circle">
+                            <?= strtoupper(substr($_SESSION['user_name'], 0, 1)); ?>
+                        </div>
+                    <?php endif; ?>
                     <h2 style="font-size: 1.5rem; margin-bottom:5px; color:var(--text-main);">
                         <?= htmlspecialchars($_SESSION['user_name']); ?>
                     </h2>
-                    <p style="color:var(--text-muted); margin:0;">
+                    <p style="color:var(--text-muted); margin:0 0 15px 0;">
                         <?= isset($_SESSION['user_role']) ? ucfirst($_SESSION['user_role']) : 'Membre'; ?>
                     </p>
+                    
+                    <!-- Avatar Upload Form -->
+                    <form method="POST" enctype="multipart/form-data" style="margin-top: 15px;">
+                        <input type="hidden" name="action" value="upload_avatar">
+                        <input type="file" name="avatar_file" accept="image/jpeg,image/png,image/jpg,image/gif" 
+                               id="avatarInput" style="display:none;" onchange="this.form.submit()">
+                        <label for="avatarInput" class="btn btn-secondary" style="cursor:pointer; font-size:0.85rem; padding:8px 16px;">
+                            <i class="fas fa-camera"></i> Changer la photo
+                        </label>
+                    </form>
                 </div>
             </div>
+
+            <?php if (!empty($message)): ?>
+                <div class="alert <?= $message_type; ?>" style="margin-bottom: 20px;">
+                    <?= htmlspecialchars($message); ?>
+                </div>
+            <?php endif; ?>
 
             <div class="card" style="width: 100%; max-width: none;">
                 <div class="card-body">
                     <h2 style="font-size: 1.3rem; margin-bottom:20px; color:var(--text-main);">Ajouter une musique</h2>
                     
-                    <?php if (!empty($message)): ?>
-                        <div class="alert <?= $message_type; ?>">
-                            <?= htmlspecialchars($message); ?>
-                        </div>
-                    <?php endif; ?>
-
                     <form action="/dashboard" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="upload">
                         
