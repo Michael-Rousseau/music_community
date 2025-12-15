@@ -2,8 +2,11 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title><?= htmlspecialchars($music['title']); ?> - Tempo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Écoutez <?= htmlspecialchars($music['title']); ?> par <?= htmlspecialchars($music['username']); ?> sur Tempo. Découvrez, notez et commentez cette création musicale.">
     
+    <title><?= htmlspecialchars($music['title']); ?> - Tempo</title>
+
     <script type="importmap">
     {
       "imports": {
@@ -13,7 +16,18 @@
     }
     </script>
     
+    <link rel="preload" href="/assets/css/tempo.css" as="style">
     <link rel="stylesheet" href="/assets/css/tempo.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
 </head>
 <body>
 
@@ -23,12 +37,12 @@
         
         <div class="top-bar" style="display:flex; justify-content:space-between; align-items:center;">
              <div>
-                 <a href="/" class="btn btn-secondary" style="border-radius:50px; padding:8px 20px; background:var(--bg-card);">
+                 <a href="/" class="btn btn-secondary" style="border-radius:50px; padding:8px 20px; background:var(--bg-card); color:var(--text-main);">
                     <i class="fas fa-arrow-left"></i> Retour
                  </a>
              </div>
              <div style="text-align:right;">
-                <button id="themeToggle" class="theme-toggle" title="Changer de thème" style="background:var(--bg-card);">
+                <button id="themeToggle" class="theme-toggle" title="Changer de thème" style="background:var(--bg-card); pointer-events:auto;">
                     <i class="fas fa-moon"></i>
                 </button>
              </div>
@@ -39,6 +53,8 @@
             <div style="display:flex; align-items:center; justify-content:flex-end; gap:10px; margin-top:10px;">
                 <?php if (!empty($music['avatar']) && $music['avatar'] !== 'default_avatar.png'): ?>
                     <img src="/uploads/avatars/<?= htmlspecialchars($music['avatar']); ?>" 
+                         alt="<?= htmlspecialchars($music['username']); ?>"
+                         width="40" height="40"
                          style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:3px solid var(--primary);">
                 <?php else: ?>
                     <div style="width:40px; height:40px; border-radius:50%; background:var(--primary); color:#2D2828; display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:bold; border:3px solid var(--primary);">
@@ -57,12 +73,12 @@
             </div>
         </div>
 
-        <button class="btn btn-secondary comments-trigger" onclick="toggleDrawer(true)" style="position:absolute; bottom:120px; right:40px; background:var(--bg-card);">
+        <button class="btn btn-secondary comments-trigger" onclick="toggleDrawer(true)" style="position:absolute; bottom:120px; right:40px; background:var(--bg-card); color:var(--text-main);">
             <i class="fas fa-comment-alt"></i> Commentaires (<?= count($comments); ?>)
         </button>
 
         <div class="bottom-bar">
-            <button id="playBtn" class="play-btn"><i class="fas fa-play"></i></button>
+            <button id="playBtn" class="play-btn" aria-label="Play Music"><i class="fas fa-play"></i></button>
             <div class="progress-wrapper" id="progressContainer">
                 <div class="progress-fill" id="progressBar"></div>
             </div>
@@ -89,10 +105,11 @@
                         <span class="comment-time">[<?= gmdate("i:s", $c['timestamp']); ?>]</span>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <?php if (!empty($c['avatar']) && $c['avatar'] !== 'default_avatar.png'): ?>
-                                <img src="/uploads/avatars/<?= htmlspecialchars($music['avatar']); ?>" 
-                                    alt="<?= htmlspecialchars($music['username']); ?>"
-                                        width="40" height="40"
-                                     style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                                <img src="/uploads/avatars/<?= htmlspecialchars($c['avatar']); ?>" 
+                                    alt="<?= htmlspecialchars($c['username']); ?>"
+                                    width="28" height="28"
+                                    loading="lazy"
+                                    style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
                             <?php else: ?>
                                 <div style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:#2D2828; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:bold;">
                                     <?= strtoupper(substr($c['username'], 0, 1)); ?>
