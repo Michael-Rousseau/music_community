@@ -123,18 +123,43 @@ $my_musics = $stmt->fetchAll();
         .alert.success { background: #d4edda; color: #155724; }
         .alert.error { background: #f8d7da; color: #721c24; }
 
+        /* Boutons upload cools */
+        .btn-upload {
+        background: linear-gradient(45deg, #ff6b35, #f7931e) !important;
+        box-shadow: 0 4px 15px rgba(255,107,53,0.4);
+        transform: scale(1);
+        transition: all 0.3s;
+        }
+        .btn-upload:hover {
+        transform: scale(1.05) !important;
+        box-shadow: 0 6px 20px rgba(255,107,53,0.6) !important;
+        }
+
+        /* cartes musiques avec bordures */
+        .music-item {
+        border-left: 5px solid #ff6b35 !important;
+        background: white;
+        border-radius: 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .music-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(255,107,53,0.2);
+        }
+
         @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">🎵 MusicShare</div>
-        <div class="links">
-            <a href="index.php">Accueil</a>
-            <a href="dashboard.php">Mon Espace</a>
-            <a href="logout.php" style="color: #ff6b6b;">Déconnexion</a>
-        </div>
+
+    <nav style="background: linear-gradient(90deg, #1e3c72, #2a5298); padding: 1.5rem 3rem; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+    <div style="color: white; font-size: 2rem; font-weight: bold;">🎧 MusicVibe</div>
+    <div>
+        <a href="index.php" style="color: white; margin-left: 20px; text-decoration: none; font-weight: 600;">Accueil</a>
+        <a href="dashboard.php" style="color: #ffd700; font-weight: bold;">Dashboard</a>
+        <a href="logout.php" style="color: #ff4757;">Déconnexion</a>
+    </div>
     </nav>
 
     <div class="container">

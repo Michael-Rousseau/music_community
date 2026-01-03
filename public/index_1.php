@@ -17,6 +17,29 @@ if (isset($_SESSION['user_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenue - MusicShare</title>
     <style>
+        nav {
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            padding: 1.5rem 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .links a {
+            color: white;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .links a.active {
+            color: #ffd700;
+            font-weight: bold;
+        }
         /* Un peu de style pour ne pas avoir une page blanche triste */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

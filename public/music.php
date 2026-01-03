@@ -101,6 +101,12 @@ $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : 
             border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px 30px;
             display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+
+        :root {
+            --primary: #4dff35ff;   
+            --secondary: #343330ff; 
+        }
+
         .play-btn { background: var(--primary); border: none; width: 60px; height: 60px; border-radius: 50%; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 0 20px var(--primary); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .play-btn:hover { transform: scale(1.1); background: #d94dff; }
         
