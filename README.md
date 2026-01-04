@@ -57,11 +57,3 @@ Le projet repose sur 4 tables principales (voir `database.sql`) :
     ```bash
     php -S localhost:8000
     ```
-
-## 📝 À faire (Roadmap)
-
-- [ ] Création de la structure des dossiers (MVC ou classique).
-- [ ] Script de connexion à la BDD (PDO).
-- [ ] Système d'inscription et d'envoi d'email.
-- [ ] Script d'upload de fichier sécurisé (vérification MIME type).
-- [ ] Création du lecteur audio HTML5 dynamique.
