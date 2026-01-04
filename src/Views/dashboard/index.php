@@ -2,7 +2,6 @@
 ob_start();
 ?>
 <style>
-        /* Keep your existing CSS styles here... */
         .dashboard-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
         @media (max-width: 768px) { .dashboard-container { grid-template-columns: 1fr; } }
         .avatar-circle { width: 100px; height: 100px; background-color: var(--primary); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800; margin: 0 auto 15px; }

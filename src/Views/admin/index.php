@@ -105,7 +105,7 @@
                                 <?php endif; ?>
                             </td>
                             <td style="text-align:center;">
-                                <?php if($u['id'] != $_SESSION['user_id']): // Can't modify your own role ?>
+                                <?php if($u['id'] != $_SESSION['user_id']):
                                     <?php if($u['role'] === 'admin'): ?>
                                         <a href="/admin?revoke_admin=<?= $u['id']; ?>" class="btn btn-secondary btn-sm" style="color:#ff9800; margin-right:5px;" onclick="return confirm('Retirer les droits admin à <?= htmlspecialchars($u['username']); ?> ?');" title="Révoquer admin">
                                             <i class="fas fa-user-minus"></i> Révoquer
