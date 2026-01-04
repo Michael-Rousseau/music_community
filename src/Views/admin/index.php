@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Administration - Tempo</title>
-    <link rel="stylesheet" href="/assets/css/tempo.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<?php ob_start() ?>
     <style>
         .admin-container {
             max-width: 1200px;
@@ -58,21 +52,7 @@
             font-weight: bold;
         }
     </style>
-</head>
-<body>
 
-    <header>
-<a href="/" class="logo">
-    <img src="/assets/images/logo_tempo.png" alt="Tempo" width="150" height="50">
-</a>
-        <div style="display:flex; align-items:center;">
-            <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
-            <nav>
-                <a href="/" class="btn btn-secondary">Retour au site</a>
-                <a href="/logout" class="btn btn-primary" style="background-color: #ff6b6b; color: white;">Déconnexion</a>
-            </nav>
-        </div>
-    </header>
 
     <div class="hero" style="padding-bottom: 20px;">
         <h1>Panneau d'Administration</h1>
@@ -190,7 +170,8 @@
         </div>
 
     </div>
-
-    <script src="/assets/js/tempo.js"></script>
-</body>
-</html>
+<?php
+$content = ob_get_clean();
+$title = "Admin";
+include __DIR__ . "/../general/layout.php";
+?>

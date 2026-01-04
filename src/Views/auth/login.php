@@ -1,22 +1,6 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Connexion - Tempo</title>
-    <link rel="stylesheet" href="<?= $basePath?>/assets/css/tempo.css">
-</head>
-<body>
-
-<header>
-<a href="<?= $basePath?>/" class="logo">
-    <img src="<?= $basePath?>/assets/images/logo_tempo.png" alt="Tempo" width="150" height="50">
-</a>
-    <div style="display:flex; align-items:center;">
-        <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
-        <a href="/login" class="btn btn-primary">Connexion</a>
-    </div>
-</header>
-<script src="<?= $basePath?>/assets/js/tempo.js"></script>
+<?php
+ob_start();
+?>
 
     <div class="auth-container">
         <h1>Connexion</h1>
@@ -44,6 +28,8 @@
             <a href="<?= $basePath?>/forgot-password" style="color:var(--dark); font-weight:bold;">Mot de passe oublié ?</a>
         </p>
     </div>
-
-</body>
-</html>
+<?php
+$content = ob_get_clean();
+$title = "Connexion";
+include __DIR__ . "/../general/layout.php";
+?>
