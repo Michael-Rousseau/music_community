@@ -150,4 +150,56 @@ class MusicController extends Controller {
             'isUserLoggedIn' => $userId ? true : false
         ]);
     }
+
+    public function visualize() {
+        // fullscreen visualization with 3D player
+        if (!isset($_GET['id'])) die("ID manquant");
+        $musicId = (int)$_GET['id'];
+
+        // session check for user
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $userId = $_SESSION['user_id'] ?? null;
+
+        $pdo = Database::getConnection();
+        $musicModel = new Music($pdo);
+        $commentModel = new Comment($pdo);
+
+        // handle POST actions (comments & ratings from visualize page)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $userId) {
+            // comments
+            if (isset($_POST['comment'])) {
+                $content = trim($_POST['comment']);
+                $timestamp = (int)($_POST['timestamp'] ?? 0);
+                if (!empty($content)) {
+                    $commentModel->create($userId, $musicId, $content, $timestamp);
+                    $this->redirect("/music/visualize?id=$musicId&drawer=open");
+                }
+            }
+            // ratings
+            if (isset($_POST['rating'])) {
+                $val = (int)$_POST['rating'];
+                if ($val >= 1 && $val <= 5) {
+                    $musicModel->addRating($userId, $musicId, $val);
+                    $this->redirect("/music/visualize?id=$musicId");
+                }
+            }
+        }
+
+        // fetch data
+        $music = $musicModel->findById($musicId);
+        if (!$music) die("Musique introuvable");
+
+        $avgRating = $musicModel->getAvgRating($musicId);
+        $comments = $commentModel->getAllForMusic($musicId);
+        $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : '';
+
+        // render without layout (layout = false)
+        $this->render('music/visualize', [
+            'music' => $music,
+            'comments' => $comments,
+            'avgRating' => $avgRating,
+            'openDrawer' => $openDrawer,
+            'isUserLoggedIn' => $userId ? true : false
+        ], false);
+    }
 }
