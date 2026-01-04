@@ -102,7 +102,7 @@ class MusicController extends Controller {
         if (!isset($_GET['id'])) die("ID manquant");
         $musicId = (int)$_GET['id'];
         
-        // Start session if not already started (needed for user_id check)
+        // start session if not already started 
         if (session_status() === PHP_SESSION_NONE) session_start();
         $userId = $_SESSION['user_id'] ?? null;
 
@@ -111,7 +111,7 @@ class MusicController extends Controller {
         $commentModel = new Comment($pdo);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $userId) {
-            // Handle Comment
+            // handle comment
             if (isset($_POST['comment'])) {
                 $content = trim($_POST['comment']);
                 $timestamp = (int)($_POST['timestamp'] ?? 0);
