@@ -1,5 +1,4 @@
 :root {
-    /* --- LIGHT THEME (Default) --- */
     --primary: #F7AAC3;
     --primary-hover: #e08baa;
     --dark: #2D2828;
@@ -11,14 +10,12 @@
     --border-color: #eeeeee;
     --shadow: rgba(0,0,0,0.05);
     
-    /* Player Specific */
     --player-bg: #ffffff;
     --player-overlay: rgba(255,255,255,0.8);
     --timeline-bg: #e0e0e0;
 }
 
 body.dark-mode {
-    /* --- DARK THEME --- */
     --primary: #F7AAC3;
     --primary-hover: #ffc2d6;
     --dark: #ffffff;
@@ -45,7 +42,6 @@ body {
     transition: background 0.3s, color 0.3s;
 }
 
-/* --- HEADER --- */
 header {
     display: flex;
     justify-content: space-between;
@@ -135,7 +131,7 @@ input:focus { outline: 2px solid var(--primary); border-color: transparent; }
     transition: transform 0.3s ease, background 0.3s;
     width: 100%; 
     max-width: 350px; 
-    margin: 0 auto; /* Centers card in its grid cell */
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
 }

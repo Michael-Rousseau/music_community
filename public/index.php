@@ -10,7 +10,6 @@ use App\Controllers\AdminController;
 session_start();
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-// Adapt this line if your site is in a subfolder (e.g. /my-site/public)
 $basePath = ''; 
 if (strpos($uri, $basePath) === 0) {
     $uri = substr($uri, strlen($basePath));
