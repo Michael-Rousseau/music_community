@@ -2,3 +2,4 @@ phpMyAdmin/
 vendor/
 uploads/
 composer.lock
+.env
