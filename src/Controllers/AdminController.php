@@ -6,8 +6,11 @@ use App\Models\User;
 use App\Models\Music;
 
 class AdminController extends Controller {
-    
+
     public function index() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
             $this->redirect($this->basePath .'/');
         }
