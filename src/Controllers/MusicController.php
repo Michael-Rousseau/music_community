@@ -9,14 +9,13 @@ class MusicController extends Controller {
 
     // music stream
     public function stream() {
-        // Get Music ID
         if (!isset($_GET['id'])) {
             header("HTTP/1.1 400 Bad Request"); 
             exit;
         }
         $id = (int)$_GET['id'];
 
-        // Fetch filename from DB
+        // fetch filename from db
         $pdo = Database::getConnection();
         $musicModel = new Music($pdo);
         $music = $musicModel->findById($id);
@@ -26,7 +25,6 @@ class MusicController extends Controller {
             exit;
         }
 
-        // Define Path
         $filePath = __DIR__ . '/../../public/uploads/mp3/' . $music['filename'];
 
         if (!file_exists($filePath)) {
@@ -34,12 +32,20 @@ class MusicController extends Controller {
             exit;
         }
 
+        // this releases the lock so the user can browse other pages while listening
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
+        // disable script time limit for long streams
+        set_time_limit(0);
+
         // handle range / streaming
         $fileSize = filesize($filePath);
         $start = 0;
         $end = $fileSize - 1;
 
-        // check if browser requested a partial range (seeking)
+        // check if browser requested a partial range 
         if (isset($_SERVER['HTTP_RANGE'])) {
             $c_start = $start;
             $c_end = $end;
@@ -50,7 +56,7 @@ class MusicController extends Controller {
                 header("Content-Range: bytes $start-$end/$fileSize");
                 exit;
             }
-            
+
             if ($range == '-') {
                 $c_start = $fileSize - substr($range, 1);
             } else {
@@ -60,7 +66,7 @@ class MusicController extends Controller {
             }
 
             $c_end = ($c_end > $end) ? $end : $c_end;
-            
+
             if ($c_start > $c_end || $c_start > $fileSize - 1 || $c_end >= $fileSize) {
                 header('HTTP/1.1 416 Requested Range Not Satisfiable');
                 header("Content-Range: bytes $start-$end/$fileSize");
@@ -69,7 +75,7 @@ class MusicController extends Controller {
             $start = $c_start;
             $end = $c_end;
             $length = $end - $start + 1;
-            
+
             fseek($fp = fopen($filePath, 'rb'), $start);
             header('HTTP/1.1 206 Partial Content');
             header("Content-Range: bytes $start-$end/$fileSize");
@@ -79,15 +85,21 @@ class MusicController extends Controller {
             $fp = fopen($filePath, 'rb');
         }
 
-        // Send Headers
+        // send headers
         header("Content-Type: audio/mpeg");
         header("Content-Length: " . $length);
         header("Content-Disposition: inline; filename=\"" . $music['title'] . ".mp3\"");
         header("Accept-Ranges: bytes");
 
-        // Output Data in 8KB chunks
+        // output data in 8kb chunks
         $buffer = 8192;
         while (!feof($fp) && ($p = ftell($fp)) <= $end) {
+
+            if (connection_aborted()) {
+                fclose($fp);
+                exit;
+            }
+
             if ($p + $buffer > $end) {
                 $buffer = $end - $p + 1;
             }
@@ -97,11 +109,11 @@ class MusicController extends Controller {
         fclose($fp);
         exit;
     }
-    
+
     public function show() {
         if (!isset($_GET['id'])) die("ID manquant");
         $musicId = (int)$_GET['id'];
-        
+
         // start session if not already started 
         if (session_status() === PHP_SESSION_NONE) session_start();
         $userId = $_SESSION['user_id'] ?? null;
