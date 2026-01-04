@@ -92,23 +92,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (timestampInput) timestampInput.value = Math.floor(audio.currentTime);
 
-    // handle popup notifications only if all elements exist
-    if (popup && popupUser && popupContent && typeof commentsData !== "undefined") {
-      try {
-        const currentSec = audio.currentTime;
-        const activeComment = commentsData.find(
-          (c) => Math.abs(c.timestamp - currentSec) < 0.5,
-        );
+    const currentSec = audio.currentTime;
+    // only handle popup notifications if elements exist (fullscreen page only)
+    if (typeof commentsData !== "undefined" && popup && popupUser && popupContent) {
+      const activeComment = commentsData.find(
+        (c) => Math.abs(c.timestamp - currentSec) < 0.5,
+      );
 
-        if (activeComment) {
-          popupUser.innerText = activeComment.username;
-          popupContent.innerText = activeComment.content;
-          popup.classList.add("active");
-        } else {
-          popup.classList.remove("active");
-        }
-      } catch (e) {
-        // silently ignore if popup elements become unavailable
+      if (activeComment) {
+        popupUser.innerText = activeComment.username;
+        popupContent.innerText = activeComment.content;
+        popup.classList.add("active");
+      } else {
+        popup.classList.remove("active");
       }
     }
   });
