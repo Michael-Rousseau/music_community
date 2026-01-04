@@ -87,7 +87,7 @@ class AuthController extends Controller {
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
-            $mail->Host = 'localhost';
+            $mail->Host = '127.0.0.1';
             $mail->Port = 25;
             $mail->CharSet = 'UTF-8';
             $mail->setFrom('no-reply@music.community', 'Tempo');
@@ -97,7 +97,7 @@ class AuthController extends Controller {
             $mail->Body = "Bienvenue ! <a href='$link'>Cliquez ici</a> pour activer votre compte.";
             $mail->send();
         } catch (Exception $e) {
-            // Log error
+            // log errro
         }
     }
 }
