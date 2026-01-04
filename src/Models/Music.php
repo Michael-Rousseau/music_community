@@ -11,10 +11,10 @@ class Music {
     }
 
     // for home page
-    public function findAllPublic($search = '') {
+    public function findAllPublic($search = '', $limit = 20, $offset = 0) {
         $sql = "SELECT m.*, u.username, u.avatar FROM musics m 
-                JOIN users u ON m.user_id = u.id 
-                WHERE m.visibility = 'public'";
+            JOIN users u ON m.user_id = u.id 
+            WHERE m.visibility = 'public'";
         if ($search) {
             $sql .= " AND m.title LIKE :search";
         }
@@ -95,7 +95,7 @@ class Music {
             $path = __DIR__ . '/../../public/uploads/mp3/' . $filename;
             if (file_exists($path)) unlink($path);
         }
-        
+
         $stmt = $this->pdo->prepare("DELETE FROM musics WHERE id = ?");
         return $stmt->execute([$id]);
     }

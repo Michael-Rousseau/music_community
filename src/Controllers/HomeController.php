@@ -9,6 +9,7 @@ class HomeController extends Controller {
         $pdo = Database::getConnection();
         $musicModel = new Music($pdo);
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
 
         // paginattion
         $perPage = 12; 
