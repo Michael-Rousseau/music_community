@@ -91,13 +91,6 @@ class AuthController extends Controller {
             $mail->Port = 25;
             $mail->SMTPAutoTLS = false; 
             $mail->SMTPSecure = false;
-            $mail->SMTPOptions = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true
-                )
-            );
             $mail->CharSet = 'UTF-8';
             $mail->setFrom('no-reply@michael.rousseau.13h37.io', 'Tempo');
             $mail->addAddress($email, $username);
