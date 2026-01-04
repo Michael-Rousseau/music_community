@@ -145,56 +145,6 @@
 <script>
     const commentsData = <?= json_encode($comments); ?>;
     window.isUserLoggedIn = <?= $isUserLoggedIn ? 'true' : 'false'; ?>;
-
-    // sync with persistent player state
-    document.addEventListener('DOMContentLoaded', () => {
-        const audio = document.getElementById('audio');
-        if (!audio) return;
-
-        // check if there's saved player state
-        try {
-            const savedState = localStorage.getItem('playerState');
-            if (savedState) {
-                const state = JSON.parse(savedState);
-
-                // if saved song matches current song, restore position
-                if (state.currentSong && state.currentSong.id == <?= $music['id']; ?>) {
-                    audio.currentTime = state.currentTime || 0;
-
-                    // auto-play if it was playing before
-                    if (state.isPlaying) {
-                        setTimeout(() => {
-                            audio.play().catch(e => console.log('autoplay prevented'));
-                        }, 100);
-                    }
-                }
-            }
-        } catch (e) {
-            console.log('failed to restore state:', e);
-        }
-
-        // save state periodically while playing
-        let saveTimeout;
-        audio.addEventListener('timeupdate', () => {
-            if (!saveTimeout) {
-                saveTimeout = setTimeout(() => {
-                    try {
-                        localStorage.setItem('playerState', JSON.stringify({
-                            currentSong: {
-                                id: <?= $music['id']; ?>,
-                                title: '<?= addslashes($music['title']); ?>',
-                                artist: '<?= addslashes($music['username']); ?>',
-                                streamUrl: '/music/stream?id=<?= $music['id']; ?>'
-                            },
-                            currentTime: audio.currentTime,
-                            isPlaying: !audio.paused
-                        }));
-                    } catch (e) {}
-                    saveTimeout = null;
-                }, 2000);
-            }
-        });
-    });
 </script>
 
 <script src="/assets/js/tempo.js"></script>

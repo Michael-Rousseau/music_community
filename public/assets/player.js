@@ -36,7 +36,6 @@ window.jumpTo = function (seconds) {
 document.addEventListener("DOMContentLoaded", () => {
   const audio = document.getElementById("audio");
   const playBtn = document.getElementById("playBtn");
-  const icon = playBtn.querySelector("i");
   const bar = document.getElementById("progressBar");
   const barCont = document.getElementById("progressContainer");
   const timestampInput = document.getElementById("timestampInput");
@@ -44,6 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const popupUser = document.getElementById("popupUser");
   const popupContent = document.getElementById("popupContent");
 
+  if (!audio || !playBtn || !bar || !barCont) return; // skip if essential elements missing
+
+  const icon = playBtn.querySelector("i");
   let isPlaying = false;
   let markersCreated = false;
 
@@ -93,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (timestampInput) timestampInput.value = Math.floor(audio.currentTime);
 
     const currentSec = audio.currentTime;
-    if (typeof commentsData !== "undefined") {
+    if (typeof commentsData !== "undefined" && popup && popupUser && popupContent) {
       const activeComment = commentsData.find(
         (c) => Math.abs(c.timestamp - currentSec) < 0.5,
       );
@@ -113,7 +115,11 @@ document.addEventListener("DOMContentLoaded", () => {
     audio.currentTime = pct * audio.duration;
   });
 
-  init3D();
+  // only init 3D if canvas container exists (fullscreen page only)
+  const canvasContainer = document.getElementById("canvas-container");
+  if (canvasContainer) {
+    init3D();
+  }
 });
 
 let scene, camera, renderer, geometry, mesh, context, analyser, dataArray;

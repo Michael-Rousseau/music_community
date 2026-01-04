@@ -141,12 +141,62 @@ class MusicController extends Controller {
         $comments = $commentModel->getAllForMusic($musicId);
         $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : '';
 
-        // Render View
+        // Render fullscreen visualization (no layout)
         $this->render('music/show', [
             'music' => $music,
             'comments' => $comments,
             'avgRating' => $avgRating,
             'openDrawer' => $openDrawer,
+            'isUserLoggedIn' => $userId ? true : false
+        ], false);
+    }
+
+    public function details() {
+        // music details page with comments and info
+        if (!isset($_GET['id'])) die("ID manquant");
+        $musicId = (int)$_GET['id'];
+
+        // session check for user
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $userId = $_SESSION['user_id'] ?? null;
+
+        $pdo = Database::getConnection();
+        $musicModel = new Music($pdo);
+        $commentModel = new Comment($pdo);
+
+        // handle POST actions (comments & ratings)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $userId) {
+            // comments
+            if (isset($_POST['comment'])) {
+                $content = trim($_POST['comment']);
+                $timestamp = (int)($_POST['timestamp'] ?? 0);
+                if (!empty($content)) {
+                    $commentModel->create($userId, $musicId, $content, $timestamp);
+                    $this->redirect("/music/details?id=$musicId");
+                }
+            }
+            // ratings
+            if (isset($_POST['rating'])) {
+                $val = (int)$_POST['rating'];
+                if ($val >= 1 && $val <= 5) {
+                    $musicModel->addRating($userId, $musicId, $val);
+                    $this->redirect("/music/details?id=$musicId");
+                }
+            }
+        }
+
+        // fetch data
+        $music = $musicModel->findById($musicId);
+        if (!$music) die("Musique introuvable");
+
+        $avgRating = $musicModel->getAvgRating($musicId);
+        $comments = $commentModel->getAllForMusic($musicId);
+
+        // render details page with layout
+        $this->render('music/details', [
+            'music' => $music,
+            'comments' => $comments,
+            'avgRating' => $avgRating,
             'isUserLoggedIn' => $userId ? true : false
         ]);
     }

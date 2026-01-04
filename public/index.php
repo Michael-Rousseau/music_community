@@ -25,8 +25,12 @@ switch ($uri) {
         (new MusicController())->show();
         break;
 
-    case '/music/stream':             
-        (new MusicController())->stream(); 
+    case '/music/stream':
+        (new MusicController())->stream();
+        break;
+
+    case '/music/details':
+        (new MusicController())->details();
         break;
 
     // Auth
