@@ -26,6 +26,10 @@ switch ($uri) {
         (new MusicController())->show();
         break;
 
+    case '/music/stream':             
+        (new MusicController())->stream(); 
+        break;
+
     // Auth
     case '/login':
         (new AuthController())->login();
@@ -51,7 +55,7 @@ switch ($uri) {
         (new DashboardController())->delete();
         break;
 
-    // Admin
+        // Admin
     case '/admin':
         (new AdminController())->index();
         break;

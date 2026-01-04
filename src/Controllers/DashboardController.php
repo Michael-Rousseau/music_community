@@ -52,13 +52,25 @@ class DashboardController extends Controller {
             $visibility = $_POST['visibility'];
 
             if (isset($_FILES['music_file']) && $_FILES['music_file']['error'] === 0) {
-                $ext = pathinfo($_FILES['music_file']['name'], PATHINFO_EXTENSION);
-                if ($ext === 'mp3') {
-                    $newFilename = uniqid() . ".mp3";
+                // file types auth
+                $allowedMimeTypes = [
+                    'audio/mpeg', 
+                    'audio/mp3', 
+                    'audio/x-mp3' 
+                ];
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mimeType = finfo_file($finfo, $_FILES['music_file']['tmp_name']);
+                finfo_close($finfo);
+
+                if (in_array($mimeType, $allowedMimeTypes)) {
+
+                    $ext = 'mp3'; 
+                    $newFilename = uniqid() . "." . $ext;
+                    
                     // Correct path relative to src/Controllers/
                     $target = __DIR__ . '/../../public/uploads/mp3/' . $newFilename;
-                    
-                    if (!is_dir(dirname($target))) mkdir(dirname($target), 0777, true);
+
+                    if (!is_dir(dirname($target))) mkdir(dirname($target), 0755, true); // only us 755
 
                     if (move_uploaded_file($_FILES['music_file']['tmp_name'], $target)) {
                         $musicModel->create($_SESSION['user_id'], $title, $desc, $newFilename, $visibility);
@@ -72,8 +84,12 @@ class DashboardController extends Controller {
                     $message = "Format invalide (MP3 uniquement).";
                     $message_type = "error";
                 }
+            } else {
+                $message = "Type de fichier invalide. Détecté : $mimeType";
+                $message_type = "error";
             }
         }
+    }
 
         $myMusics = $musicModel->findAllByUser($_SESSION['user_id']);
         

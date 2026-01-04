@@ -140,9 +140,9 @@
         <input type="hidden" name="rating" id="ratingInput">
     </form>
     
-    <audio id="audio" src="/uploads/mp3/<?= htmlspecialchars($music['filename']); ?>" crossorigin="anonymous"></audio>
+    <audio id="audio" src="/music/stream?id=<?= $music['id']; ?>" crossorigin="anonymous"></audio>
 
-    <script>
+<script>
         const commentsData = <?= json_encode($comments); ?>;
         window.isUserLoggedIn = <?= $isUserLoggedIn ? 'true' : 'false'; ?>;
     </script>

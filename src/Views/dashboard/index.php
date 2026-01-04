@@ -134,10 +134,10 @@
                                     <?= ($music['visibility'] == 'public') ? '🌍 Public' : '🔒 Privé'; ?> 
                                     • Ajouté le <?= date('d/m/Y', strtotime($music['created_at'])); ?>
                                 </span>
-                                <audio controls style="margin-top:10px; height: 30px; width: 100%; max-width: 300px;">
-                                    <source src="/uploads/mp3/<?= htmlspecialchars($music['filename']); ?>" type="audio/mpeg">
-                                    Votre navigateur ne supporte pas l'audio.
-                                </audio>
+                                    <audio controls style="margin-top:10px; height: 30px; width: 100%; max-width: 300px;">
+                                        <source src="/music/stream?id=<?= $music['id']; ?>" type="audio/mpeg">
+                                            Votre navigateur ne supporte pas l'audio.
+                                    </audio>
                             </div>
                             
                             <div class="actions">

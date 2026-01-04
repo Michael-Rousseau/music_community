@@ -6,9 +6,101 @@ use App\Models\Music;
 use App\Models\Comment;
 
 class MusicController extends Controller {
+
+    // music stream
+    public function stream() {
+        // Get Music ID
+        if (!isset($_GET['id'])) {
+            header("HTTP/1.1 400 Bad Request"); 
+            exit;
+        }
+        $id = (int)$_GET['id'];
+
+        // Fetch filename from DB
+        $pdo = Database::getConnection();
+        $musicModel = new Music($pdo);
+        $music = $musicModel->findById($id);
+
+        if (!$music) {
+            header("HTTP/1.1 404 Not Found");
+            exit;
+        }
+
+        // Define Path (Securely outside web root if possible, or just strict path)
+        $filePath = __DIR__ . '/../../public/uploads/mp3/' . $music['filename'];
+
+        if (!file_exists($filePath)) {
+            header("HTTP/1.1 404 Not Found");
+            exit;
+        }
+
+        // Handle Range / Streaming
+        $fileSize = filesize($filePath);
+        $start = 0;
+        $end = $fileSize - 1;
+
+        // Check if browser requested a partial range (seeking)
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            $c_start = $start;
+            $c_end = $end;
+
+            // Extract range (e.g., "bytes=1024-")
+            list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
+            if (strpos($range, ',') !== false) {
+                header('HTTP/1.1 416 Requested Range Not Satisfiable');
+                header("Content-Range: bytes $start-$end/$fileSize");
+                exit;
+            }
+            
+            if ($range == '-') {
+                $c_start = $fileSize - substr($range, 1);
+            } else {
+                $range = explode('-', $range);
+                $c_start = $range[0];
+                $c_end = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $c_end;
+            }
+
+            $c_end = ($c_end > $end) ? $end : $c_end;
+            
+            if ($c_start > $c_end || $c_start > $fileSize - 1 || $c_end >= $fileSize) {
+                header('HTTP/1.1 416 Requested Range Not Satisfiable');
+                header("Content-Range: bytes $start-$end/$fileSize");
+                exit;
+            }
+            $start = $c_start;
+            $end = $c_end;
+            $length = $end - $start + 1;
+            
+            fseek($fp = fopen($filePath, 'rb'), $start);
+            header('HTTP/1.1 206 Partial Content');
+            header("Content-Range: bytes $start-$end/$fileSize");
+        } else {
+            // Full content
+            $length = $fileSize;
+            $fp = fopen($filePath, 'rb');
+        }
+
+        // Send Headers
+        header("Content-Type: audio/mpeg");
+        header("Content-Length: " . $length);
+        header("Content-Disposition: inline; filename=\"" . $music['title'] . ".mp3\"");
+        header("Accept-Ranges: bytes");
+
+        // Output Data in 8KB chunks
+        $buffer = 8192;
+        while (!feof($fp) && ($p = ftell($fp)) <= $end) {
+            if ($p + $buffer > $end) {
+                $buffer = $end - $p + 1;
+            }
+            echo fread($fp, $buffer);
+            flush();
+        }
+        fclose($fp);
+        exit;
+    }
     
     public function show() {
-        // 1. Setup
+        // Setup
         if (!isset($_GET['id'])) die("ID manquant");
         $musicId = (int)$_GET['id'];
         
@@ -20,7 +112,7 @@ class MusicController extends Controller {
         $musicModel = new Music($pdo);
         $commentModel = new Comment($pdo);
 
-        // 2. Handle POST Actions (Comments & Ratings)
+        // Handle POST Actions (Comments & Ratings)
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $userId) {
             // Handle Comment
             if (isset($_POST['comment'])) {
@@ -41,7 +133,7 @@ class MusicController extends Controller {
             }
         }
 
-        // 3. Fetch Data for View
+        // Fetch Data for View
         $music = $musicModel->findById($musicId);
         if (!$music) die("Musique introuvable");
 
@@ -49,7 +141,7 @@ class MusicController extends Controller {
         $comments = $commentModel->getAllForMusic($musicId);
         $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : '';
 
-        // 4. Render View
+        // Render View
         $this->render('music/show', [
             'music' => $music,
             'comments' => $comments,
