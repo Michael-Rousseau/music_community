@@ -89,6 +89,8 @@ class AuthController extends Controller {
             $mail->isSMTP();
             $mail->Host = '127.0.0.1';
             $mail->Port = 25;
+            $mail->SMTPAutoTLS = false; 
+            $mail->SMTPSecure = false;
             $mail->CharSet = 'UTF-8';
             $mail->setFrom('no-reply@michael.rousseau.13h37.io', 'Tempo');
             $mail->addAddress($email, $username);
