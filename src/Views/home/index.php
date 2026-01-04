@@ -24,7 +24,9 @@
 <div class="grid">
     <?php if(isset($musics)): foreach ($musics as $m): ?>
         <div class="card">
-            <a href="/music?id=<?= $m['id']; ?>" class="card-img" style="text-decoration: none;">
+            <a href="/music?id=<?= $m['id']; ?>"
+               onclick="loadSong(<?= $m['id']; ?>, '<?= addslashes($m['title']); ?>', '<?= addslashes($m['username']); ?>');"
+               class="card-img" style="text-decoration: none;">
                 <?php if(!empty($m['image']) && $m['image'] !== 'default_image.png'): ?>
                     <img src="/uploads/images/<?= htmlspecialchars($m['image']) ?>"
                         alt="Cover de <?= htmlspecialchars($m['title']); ?>"
@@ -37,7 +39,9 @@
             </a>
             <div class="card-body">
                 <h2 class="card-title">
-                    <a href="/music?id=<?= $m['id']; ?>" class="card-title-link">
+                    <a href="/music?id=<?= $m['id']; ?>"
+                       onclick="loadSong(<?= $m['id']; ?>, '<?= addslashes($m['title']); ?>', '<?= addslashes($m['username']); ?>');"
+                       class="card-title-link">
                         <?= htmlspecialchars($m['title']); ?>
                     </a>
                 </h2>
