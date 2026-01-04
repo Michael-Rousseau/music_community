@@ -93,7 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (timestampInput) timestampInput.value = Math.floor(audio.currentTime);
 
     const currentSec = audio.currentTime;
-    if (typeof commentsData !== "undefined") {
+    // only handle popup notifications if elements exist (fullscreen page only)
+    if (typeof commentsData !== "undefined" && popup && popupUser && popupContent) {
       const activeComment = commentsData.find(
         (c) => Math.abs(c.timestamp - currentSec) < 0.5,
       );
