@@ -10,7 +10,7 @@ class Music {
         $this->pdo = $pdo;
     }
 
-    // For Home Page
+    // for home page
     public function findAllPublic($search = '') {
         $sql = "SELECT m.*, u.username, u.avatar FROM musics m 
                 JOIN users u ON m.user_id = u.id 
@@ -26,7 +26,7 @@ class Music {
         return $stmt->fetchAll();
     }
 
-    // For Single Music Page
+    // for single music page
     public function findById($id) {
         $stmt = $this->pdo->prepare("SELECT m.*, u.username, u.avatar FROM musics m JOIN users u ON m.user_id = u.id WHERE m.id = ?");
         $stmt->execute([$id]);
