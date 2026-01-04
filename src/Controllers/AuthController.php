@@ -90,7 +90,7 @@ class AuthController extends Controller {
             $mail->Host = '127.0.0.1';
             $mail->Port = 25;
             $mail->CharSet = 'UTF-8';
-            $mail->setFrom('no-reply@music.community', 'Tempo');
+            $mail->setFrom('no-reply@michael.rousseau.13h37.io', 'Tempo');
             $mail->addAddress($email, $username);
             $mail->isHTML(true);
             $mail->Subject = 'Activez votre compte Tempo';
