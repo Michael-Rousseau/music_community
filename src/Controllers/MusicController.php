@@ -26,7 +26,7 @@ class MusicController extends Controller {
             exit;
         }
 
-        // Define Path (Securely outside web root if possible, or just strict path)
+        // Define Path
         $filePath = __DIR__ . '/../../public/uploads/mp3/' . $music['filename'];
 
         if (!file_exists($filePath)) {
@@ -34,17 +34,16 @@ class MusicController extends Controller {
             exit;
         }
 
-        // Handle Range / Streaming
+        // handle range / streaming
         $fileSize = filesize($filePath);
         $start = 0;
         $end = $fileSize - 1;
 
-        // Check if browser requested a partial range (seeking)
+        // check if browser requested a partial range (seeking)
         if (isset($_SERVER['HTTP_RANGE'])) {
             $c_start = $start;
             $c_end = $end;
 
-            // Extract range (e.g., "bytes=1024-")
             list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
             if (strpos($range, ',') !== false) {
                 header('HTTP/1.1 416 Requested Range Not Satisfiable');
@@ -75,7 +74,7 @@ class MusicController extends Controller {
             header('HTTP/1.1 206 Partial Content');
             header("Content-Range: bytes $start-$end/$fileSize");
         } else {
-            // Full content
+            // full content
             $length = $fileSize;
             $fp = fopen($filePath, 'rb');
         }
@@ -100,7 +99,6 @@ class MusicController extends Controller {
     }
     
     public function show() {
-        // Setup
         if (!isset($_GET['id'])) die("ID manquant");
         $musicId = (int)$_GET['id'];
         
@@ -112,7 +110,6 @@ class MusicController extends Controller {
         $musicModel = new Music($pdo);
         $commentModel = new Comment($pdo);
 
-        // Handle POST Actions (Comments & Ratings)
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $userId) {
             // Handle Comment
             if (isset($_POST['comment'])) {
@@ -123,7 +120,7 @@ class MusicController extends Controller {
                     $this->redirect("/music?id=$musicId&drawer=open");
                 }
             }
-            // Handle Rating
+            // handle rating
             if (isset($_POST['rating'])) {
                 $val = (int)$_POST['rating'];
                 if ($val >= 1 && $val <= 5) {
@@ -133,7 +130,7 @@ class MusicController extends Controller {
             }
         }
 
-        // Fetch Data for View
+        // fetch data for view
         $music = $musicModel->findById($musicId);
         if (!$music) die("Musique introuvable");
 
@@ -141,7 +138,7 @@ class MusicController extends Controller {
         $comments = $commentModel->getAllForMusic($musicId);
         $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : '';
 
-        // Render View
+        // render view
         $this->render('music/show', [
             'music' => $music,
             'comments' => $comments,

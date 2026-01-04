@@ -86,7 +86,7 @@ class Music {
         return $stmt->execute([$id]);
     }
 
-    // Ratings
+    // ratings
     public function getAvgRating($musicId) {
         $stmt = $this->pdo->prepare("SELECT AVG(value) as moy FROM ratings WHERE music_id = ?");
         $stmt->execute([$musicId]);

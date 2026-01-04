@@ -34,7 +34,7 @@ class User {
         return $stmt->rowCount() > 0;
     }
 
-    // Admin methods
+    // admin methods
     public function getAll() {
         return $this->pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll();
     }
