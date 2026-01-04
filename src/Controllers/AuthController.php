@@ -97,7 +97,7 @@ class AuthController extends Controller {
             $mail->Body = "Bienvenue ! <a href='$link'>Cliquez ici</a> pour activer votre compte.";
             $mail->send();
         } catch (Exception $e) {
-            error_log("Erreur Mailer : " . $mail->ErrorInfo);
+            die("STOP - Erreur Mailer : " . $mail->ErrorInfo);
         }
     }
 }
