@@ -28,7 +28,6 @@ class AdminController extends Controller {
         
         if (isset($_GET['promote_admin'])) {
             $userId = (int)$_GET['promote_admin'];
-            // Prevent promoting yourself (you're already admin)
             if ($userId != $_SESSION['user_id']) {
                 $userModel->updateRole($userId, 'admin');
             }
@@ -37,7 +36,6 @@ class AdminController extends Controller {
         
         if (isset($_GET['revoke_admin'])) {
             $userId = (int)$_GET['revoke_admin'];
-            // Prevent revoking yourself
             if ($userId != $_SESSION['user_id']) {
                 $userModel->updateRole($userId, 'user');
             }
