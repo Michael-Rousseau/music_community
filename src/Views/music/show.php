@@ -1,35 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Écoutez <?= htmlspecialchars($music['title']); ?> par <?= htmlspecialchars($music['username']); ?> sur Tempo. Découvrez, notez et commentez cette création musicale.">
-    
-    <title><?= htmlspecialchars($music['title']); ?> - Tempo</title>
-
-    <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
-      }
-    }
-    </script>
-    
-    <link rel="preload" href="/assets/css/tempo.css" as="style">
-    <link rel="stylesheet" href="/assets/css/tempo.css">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
-
-    <noscript>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    </noscript>
-</head>
-<body>
+<?php ob_start(); ?>
 
     <div id="canvas-container"></div>
 
@@ -147,7 +116,10 @@
         window.isUserLoggedIn = <?= $isUserLoggedIn ? 'true' : 'false'; ?>;
     </script>
 
-    <script src="/assets/js/tempo.js"></script>
-    <script type="module" src="/assets/player.js"></script>
-</body>
-</html>
+    <script type="module" src="<?= $basePath ?>/assets/player.js"></script>
+
+<?php
+$content = ob_get_clean();
+$title = htmlspecialchars($music['title']);
+include __DIR__ . "/../general/layout.php";
+?>

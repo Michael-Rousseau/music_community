@@ -153,7 +153,7 @@ class AuthController extends Controller {
     }
 
     private function sendVerificationEmail($email, $username, $token) {
-        $link = "http://" . $_SERVER['HTTP_HOST'] . "/verify?token=" . $token;
+        $link = "http://" . $_SERVER['HTTP_HOST'] . $this->basePath . "/verify?token=" . $token;
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
@@ -163,11 +163,13 @@ class AuthController extends Controller {
             $mail->SMTPAutoTLS = false; 
             $mail->SMTPSecure = false;
             $mail->CharSet = 'UTF-8';
-            $mail->setFrom('no-reply@yopmail.com', 'Tempo');
+            $mail->setFrom('no-reply@' . $_SERVER['HTTP_HOST'], 'Tempo');
             $mail->addAddress($email, $username);
             $mail->isHTML(true);
             $mail->Subject = 'Activez votre compte Tempo';
             $mail->Body = "Bienvenue ! <a href='$link'>Cliquez ici</a> pour activer votre compte.";
+            $mail->SMTPDebug = 2;
+            $mail->Debugoutput = 'error_log';
             $mail->send();
         } catch (Exception $e) {
             die("STOP - Erreur Mailer : " . $mail->ErrorInfo);

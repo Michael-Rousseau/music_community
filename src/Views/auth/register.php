@@ -1,19 +1,6 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Inscription - Tempo</title>
-    <link rel="stylesheet" href="<?= $basePath?>/assets/css/tempo.css">
-</head>
-<body>
-
-    <header>
-<a href="<?= $basePath?>/" class="logo">
-    <img src="<?= $basePath?>/assets/images/logo_tempo.png" alt="Tempo" width="150" height="50">
-</a>
-        <a href="<?= $basePath?>/login" class="btn btn-primary">Connexion</a>
-    </header>
-
+<?php
+ob_start();
+?>
     <div class="auth-container">
         <h1>Inscription</h1>
 
@@ -41,5 +28,8 @@
         </p>
     </div>
 
-</body>
-</html>
+<?php
+$content = ob_get_clean();
+$title = "Inscription";
+include __DIR__ . "/../general/layout.php";
+?>

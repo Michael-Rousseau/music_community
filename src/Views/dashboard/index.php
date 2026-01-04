@@ -1,24 +1,7 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-
-    <link rel="preload" href="/assets/css/tempo.css" as="style">
-    <link rel="stylesheet" href="/assets/css/tempo.css">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
-    
-    <noscript>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    </noscript>
-    <meta charset="UTF-8">
-    <title>Mon Espace - Tempo</title>
-    <link rel="stylesheet" href="/assets/css/tempo.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+<?php
+ob_start();
+?>
+<style>
         /* Keep your existing CSS styles here... */
         .dashboard-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
         @media (max-width: 768px) { .dashboard-container { grid-template-columns: 1fr; } }
@@ -34,25 +17,6 @@
         .alert.success { background: #d4edda; color: #155724; }
         .alert.error { background: #f8d7da; color: #721c24; }
     </style>
-</head>
-<body>
-
-<header>
-<a href="/" class="logo">
-    <img src="/assets/images/logo_tempo.png" alt="Tempo" width="150" height="50">
-</a>
-    <div style="display:flex; align-items:center;">
-        <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
-        <nav>
-            <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                <a href="/admin" class="btn btn-secondary" style="border-color:gold; color:#b58900;">Admin</a>
-            <?php endif; ?>
-            <a href="/" class="btn btn-secondary">Accueil</a>
-            <a href="/logout" class="btn btn-primary" style="background:#ff6b6b; color:white;">Déconnexion</a>
-        </nav>
-    </div>
-</header>
-<script src="/assets/js/tempo.js"></script>
 
     <div class="dashboard-container">
         
@@ -159,5 +123,8 @@
         </div>
 
     </div>
-</body>
-</html>
+<?php
+$content = ob_get_clean();
+$title = "Mon Espace";
+include __DIR__ . "/../general/layout.php";
+?>

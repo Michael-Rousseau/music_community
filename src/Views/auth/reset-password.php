@@ -1,22 +1,6 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Réinitialiser - Tempo</title>
-    <link rel="stylesheet" href="<?= $basePath?>/assets/css/tempo.css">
-</head>
-<body>
-
-<header>
-<a href="<?= $basePath?>/" class="logo">
-    <img src="<?= $basePath?>/assets/images/logo_tempo.png" alt="Tempo" width="150" height="50">
-</a>
-    <div style="display:flex; align-items:center;">
-        <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
-        <a href="/login" class="btn btn-primary">Connexion</a>
-    </div>
-</header>
-<script src="/assets/js/tempo.js"></script>
+<?php
+ob_start();
+?>
 
     <div class="auth-container">
         <h1>Réinitialiser le mot de passe</h1>
@@ -46,5 +30,8 @@
 
     </div>
 
-</body>
-</html>
+<?php
+$content = ob_get_clean();
+$title = "Réinitialiser le mot de passe";
+include __DIR__ . "/../general/layout.php";
+?>

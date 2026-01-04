@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Modifier - Tempo</title>
-    <link rel="stylesheet" href="/assets/css/tempo.css">
+<?php
+ob_start();
+?>
     <style>
         body { 
             display: flex; 
@@ -32,8 +29,6 @@
             box-sizing: border-box;
         }
     </style>
-</head>
-<body>
     <form method="POST">
         <h2 style="margin-top:0; text-align:center;">Modifier la musique</h2>
         
@@ -55,5 +50,8 @@
         </p>
     </form>
     <script src="/assets/js/tempo.js"></script>
-</body>
-</html>
+<?php
+$content = ob_get_clean();
+$title = "Modifier une musique";
+include __DIR__ . "/../general/layout.php";
+?>

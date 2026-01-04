@@ -9,7 +9,7 @@ class AdminController extends Controller {
     
     public function index() {
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            $this->redirect('/');
+            $this->redirect($this->basePath .'/');
         }
 
         $pdo = Database::getConnection();
@@ -23,7 +23,7 @@ class AdminController extends Controller {
             if ($userId != $_SESSION['user_id']) {
                 $userModel->delete($userId);
             }
-            $this->redirect('/admin');
+            $this->redirect($this->basePath .'/admin');
         }
         
         if (isset($_GET['promote_admin'])) {
@@ -32,7 +32,7 @@ class AdminController extends Controller {
             if ($userId != $_SESSION['user_id']) {
                 $userModel->updateRole($userId, 'admin');
             }
-            $this->redirect('/admin');
+            $this->redirect($this->basePath .'/admin');
         }
         
         if (isset($_GET['revoke_admin'])) {
@@ -41,12 +41,12 @@ class AdminController extends Controller {
             if ($userId != $_SESSION['user_id']) {
                 $userModel->updateRole($userId, 'user');
             }
-            $this->redirect('/admin');
+            $this->redirect($this->basePath .'/admin');
         }
         
         if (isset($_GET['del_music'])) {
             $musicModel->deleteByAdmin((int)$_GET['del_music']);
-            $this->redirect('/admin');
+            $this->redirect($this->basePath .'/admin');
         }
 
         $this->render('admin/index', [
