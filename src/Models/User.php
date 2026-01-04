@@ -48,4 +48,16 @@ class User {
         $stmt = $this->pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
         return $stmt->execute([$role, $id]);
     }
+
+    public function updateToken($id, $role) {
+        $stmt = $this->pdo->prepare("UPDATE users SET token = ? WHERE id = ?");
+        return $stmt->execute([$role, $id]);
+    }
+
+    public function updatePasswordByToken($token, $password) {
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $this->pdo->prepare("UPDATE users SET password = ?, token = NULL WHERE token = ?");
+        $stmt->execute([$hash, $token]);
+        return $stmt->rowCount() > 0;
+    }
 }

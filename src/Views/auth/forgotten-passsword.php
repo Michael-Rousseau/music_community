@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Connexion - Tempo</title>
+    <title>Mot de Passe oublié - Tempo</title>
     <link rel="stylesheet" href="<?= $basePath?>/assets/css/tempo.css">
 </head>
 <body>
@@ -13,13 +13,13 @@
 </a>
     <div style="display:flex; align-items:center;">
         <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
-        <a href="/login" class="btn btn-primary">Connexion</a>
+        <a href="<?= $basePath ?>/login" class="btn btn-primary">Connexion</a>
     </div>
 </header>
-<script src="<?= $basePath?>/assets/js/tempo.js"></script>
+<script src="/assets/js/tempo.js"></script>
 
     <div class="auth-container">
-        <h1>Connexion</h1>
+        <h1>Mot de passe oublié!</h1>
 
         <?php if (!empty($message)): ?>
             <div style="background:#f8d7da; color:#721c24; padding:10px; border-radius:8px; margin-bottom:20px;">
@@ -27,22 +27,13 @@
             </div>
         <?php endif; ?>
 
-        <form action="<?= $basePath?>/login" method="POST">
+        <form action="<?= $basePath?>/forgot-password" method="POST">
             <div class="form-group">
                 <input type="email" name="email" placeholder="Email" required>
             </div>
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Mot de passe" required>
-            </div>
-            <button type="submit">Connexion</button>
+            <button type="submit">Envoyer un mail</button>
         </form>
 
-        <p style="margin-top:20px; color:#666;">
-            Pas encore de compte ? <a href="<?= $basePath?>/register" style="color:var(--dark); font-weight:bold;">Inscrivez-vous</a>
-        </p>
-         <p style="margin-top:20px; color:#666;">
-            <a href="<?= $basePath?>/forgot-password" style="color:var(--dark); font-weight:bold;">Mot de passe oublié ?</a>
-        </p>
     </div>
 
 </body>

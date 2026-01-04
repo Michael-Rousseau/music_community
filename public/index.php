@@ -10,6 +10,7 @@ use App\Controllers\AdminController;
 session_start();
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+// Adapt this line if your site is in a subfolder (e.g. /music_community)
 $basePath = ''; 
 if (strpos($uri, $basePath) === 0) {
     $uri = substr($uri, strlen($basePath));
@@ -41,6 +42,12 @@ switch ($uri) {
         break;
     case '/logout':
         (new AuthController())->logout();
+        break;
+    case '/forgot-password':
+        (new AuthController())->forgottenPassword();
+        break;
+    case '/reset-password':
+        (new AuthController())->resetPassword();
         break;
 
     // Dashboard
