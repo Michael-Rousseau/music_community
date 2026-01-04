@@ -11,7 +11,6 @@ class HomeController extends Controller {
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
         // paginattion
-        if ($page < 1) $page = 1;
         $perPage = 12; 
         $offset = ($page - 1) * $perPage;
 
