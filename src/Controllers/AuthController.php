@@ -87,7 +87,8 @@ class AuthController extends Controller {
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
-            $mail->Host = '127.0.0.1';
+            $mail->Host = 'localhost';
+            $mail->STMPAuth = false;
             $mail->Port = 25;
             $mail->SMTPAutoTLS = false; 
             $mail->SMTPSecure = false;
