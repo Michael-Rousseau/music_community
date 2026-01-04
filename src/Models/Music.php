@@ -18,10 +18,11 @@ class Music {
         if ($search) {
             $sql .= " AND m.title LIKE :search";
         }
-        $sql .= " ORDER BY m.created_at DESC :limit OFFSET :offset";
+        $sql .= " ORDER BY m.created_at DESC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->pdo->prepare($sql);
         if ($search) $stmt->bindValue(':search', "%$search%");
+
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();

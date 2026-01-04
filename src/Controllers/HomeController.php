@@ -16,7 +16,7 @@ class HomeController extends Controller {
         $offset = ($page - 1) * $perPage;
 
         $search = isset($_GET['q']) ? trim($_GET['q']) : '';
-        $musics = $musicModel->findAllPublic($search);
+        $musics = $musicModel->findAllPublic($search, $perPage, $offset);
         $totalMusics = $musicModel->countPublic($search);
 
         $totalPages = ceil($totalMusics / $perPage);
