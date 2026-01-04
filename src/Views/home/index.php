@@ -46,6 +46,28 @@ ob_start();
         <?php endforeach; endif; ?>
     </div>
 
+    <div class="pagination" style="text-align: center; margin: 40px 0;">
+        <?php if (isset($currentPage) && $currentPage > 1): ?>
+            <a href="<?= $basePath ?>/?page=<?= $currentPage - 1 ?>&q=<?= htmlspecialchars($search) ?>" 
+            class="btn btn-secondary">
+            &laquo; Précédent
+            </a>
+        <?php endif; ?>
+
+        <?php if (isset($currentPage) && isset($totalPages)): ?>
+            <span style="margin: 0 15px; font-weight: bold;">
+                Page <?= $currentPage ?> / <?= $totalPages ?>
+            </span>
+        <?php endif; ?>
+
+        <?php if (isset($currentPage) && isset($totalPages) && $currentPage < $totalPages): ?>
+            <a href="<?= $basePath ?>/?page=<?= $currentPage + 1 ?>&q=<?= htmlspecialchars($search) ?>" 
+            class="btn btn-secondary">
+            Suivant &raquo;
+            </a>
+        <?php endif; ?>
+    </div>
+
 <?php
 $content = ob_get_clean();
 $title = "Accueil";

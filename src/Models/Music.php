@@ -18,12 +18,25 @@ class Music {
         if ($search) {
             $sql .= " AND m.title LIKE :search";
         }
-        $sql .= " ORDER BY m.created_at DESC";
-        
+        $sql .= " ORDER BY m.created_at DESC :limit OFFSET :offset";
+
+        $stmt = $this->pdo->prepare($sql);
+        if ($search) $stmt->bindValue(':search', "%$search%");
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function countPublic($search = '') {
+        $sql = "SELECT COUNT(*) FROM musics m WHERE m.visibility = 'public'";
+        if ($search) {
+            $sql .= " AND m.title LIKE :search";
+        }
         $stmt = $this->pdo->prepare($sql);
         if ($search) $stmt->bindValue(':search', "%$search%");
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchColumn();
     }
 
     // for single music page
