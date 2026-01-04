@@ -6,6 +6,7 @@ use App\Models\Music;
 
 class DashboardController extends Controller {
 
+    // 1. LIST & UPLOAD (Existing)
     public function index() {
         if (!isset($_SESSION['user_id'])) $this->redirect('/login');
 
@@ -22,8 +23,8 @@ class DashboardController extends Controller {
 
         // --- Handle Avatar Upload ---
         elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'upload_avatar') {
-            // (Keep your existing avatar logic here, it looked fine)
-            if (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] === 0) {
+             // (Keep your existing avatar logic here, it looked fine)
+             if (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] === 0) {
                 $ext = strtolower(pathinfo($_FILES['avatar_file']['name'], PATHINFO_EXTENSION));
                 $allowed = ['jpg', 'jpeg', 'png', 'gif'];
 
@@ -50,10 +51,10 @@ class DashboardController extends Controller {
 
         // --- FIX 2: Handle Music Upload with Proper Error Codes ---
         elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'upload') {
-
+            
             // Check if file exists AND has no error
             if (isset($_FILES['music_file']) && $_FILES['music_file']['error'] === UPLOAD_ERR_OK) {
-
+                
                 // Now it's safe to check mime type
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mimeType = finfo_file($finfo, $_FILES['music_file']['tmp_name']);
@@ -88,11 +89,11 @@ class DashboardController extends Controller {
                 // Handle Specific Upload Errors (The "else" block that was crashing before)
                 $errorCode = $_FILES['music_file']['error'] ?? 4; 
                 switch ($errorCode) {
-                case UPLOAD_ERR_INI_SIZE:   $message = "Fichier trop lourd (limite php.ini dépassée)."; break;
-                case UPLOAD_ERR_FORM_SIZE:  $message = "Fichier trop lourd (limite formulaire HTML)."; break;
-                case UPLOAD_ERR_PARTIAL:    $message = "Upload interrompu."; break;
-                case UPLOAD_ERR_NO_FILE:    $message = "Aucun fichier envoyé."; break;
-                default:                    $message = "Erreur inconnue (Code $errorCode).";
+                    case UPLOAD_ERR_INI_SIZE:   $message = "Fichier trop lourd (limite php.ini dépassée)."; break;
+                    case UPLOAD_ERR_FORM_SIZE:  $message = "Fichier trop lourd (limite formulaire HTML)."; break;
+                    case UPLOAD_ERR_PARTIAL:    $message = "Upload interrompu."; break;
+                    case UPLOAD_ERR_NO_FILE:    $message = "Aucun fichier envoyé."; break;
+                    default:                    $message = "Erreur inconnue (Code $errorCode).";
                 }
                 $message_type = "error";
             }
@@ -100,7 +101,7 @@ class DashboardController extends Controller {
 
         // Fetch Data & Render
         $myMusics = $musicModel->findAllByUser($_SESSION['user_id']);
-
+        
         $stmt = $pdo->prepare("SELECT avatar FROM users WHERE id = ?");
         $stmt->execute([$_SESSION['user_id']]);
         $user_avatar = $stmt->fetchColumn();
@@ -113,57 +114,42 @@ class DashboardController extends Controller {
         ]);
     }
 
-    $myMusics = $musicModel->findAllByUser($_SESSION['user_id']);
+    // 2. EDIT MUSIC
+    public function edit() {
+        if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) $this->redirect('/dashboard');
 
-    // Get user avatar
-    $stmt = $pdo->prepare("SELECT avatar FROM users WHERE id = ?");
-    $stmt->execute([$_SESSION['user_id']]);
-    $user_avatar = $stmt->fetchColumn();
+        $pdo = Database::getConnection();
+        $musicModel = new Music($pdo);
+        $id = (int)$_GET['id'];
 
-    $this->render('dashboard/index', [
-        'my_musics' => $myMusics,
-        'message' => $message,
-        'message_type' => $message_type,
-        'user_avatar' => $user_avatar
-    ]);
-}
+        // Security check: Does this music belong to the user?
+        $music = $musicModel->findById($id);
+        if (!$music || $music['user_id'] != $_SESSION['user_id']) {
+            die("Accès interdit");
+        }
 
-// 2. EDIT MUSIC
-public function edit() {
-    if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) $this->redirect('/dashboard');
+        // Handle Form Submit
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $title = trim($_POST['title']);
+            $desc = trim($_POST['description']);
+            $viz = $_POST['visibility'];
 
-    $pdo = Database::getConnection();
-    $musicModel = new Music($pdo);
-    $id = (int)$_GET['id'];
+            $musicModel->update($id, $_SESSION['user_id'], $title, $desc, $viz);
+            $this->redirect('/dashboard');
+        }
 
-    // Security check: Does this music belong to the user?
-    $music = $musicModel->findById($id);
-    if (!$music || $music['user_id'] != $_SESSION['user_id']) {
-        die("Accès interdit");
+        $this->render('dashboard/edit', ['music' => $music]);
     }
 
-    // Handle Form Submit
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $title = trim($_POST['title']);
-        $desc = trim($_POST['description']);
-        $viz = $_POST['visibility'];
+    // 3. DELETE MUSIC
+    public function delete() {
+        if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) $this->redirect('/dashboard');
 
-        $musicModel->update($id, $_SESSION['user_id'], $title, $desc, $viz);
+        $pdo = Database::getConnection();
+        $musicModel = new Music($pdo);
+
+        $musicModel->delete((int)$_GET['id'], $_SESSION['user_id']);
+
         $this->redirect('/dashboard');
     }
-
-    $this->render('dashboard/edit', ['music' => $music]);
-}
-
-// 3. DELETE MUSIC
-public function delete() {
-    if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) $this->redirect('/dashboard');
-
-    $pdo = Database::getConnection();
-    $musicModel = new Music($pdo);
-
-    $musicModel->delete((int)$_GET['id'], $_SESSION['user_id']);
-
-    $this->redirect('/dashboard');
-}
 }
