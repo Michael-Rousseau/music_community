@@ -19,7 +19,7 @@ class AdminController extends Controller {
         // Handle Actions
         if (isset($_GET['del_user'])) {
             $userId = (int)$_GET['del_user'];
-            // Prevent deleting yourself
+            // Prevent deleting 
             if ($userId != $_SESSION['user_id']) {
                 $userModel->delete($userId);
             }
