@@ -93,7 +93,7 @@ class AuthController extends Controller {
             $mail->SMTPAutoTLS = false; 
             $mail->SMTPSecure = false;
             $mail->CharSet = 'UTF-8';
-            $mail->setFrom('no-reply@michael.rousseau.13h37.io', 'Tempo');
+            $mail->setFrom('no-reply@yopmail.com', 'Tempo');
             $mail->addAddress($email, $username);
             $mail->isHTML(true);
             $mail->Subject = 'Activez votre compte Tempo';
