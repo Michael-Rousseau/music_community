@@ -36,7 +36,7 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
-            padding-bottom: 100px;
+            padding-bottom: 120px;
             transition: background 0.3s, color 0.3s;
         }
 

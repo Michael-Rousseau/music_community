@@ -27,22 +27,29 @@
 <audio id="audio" crossorigin="anonymous"></audio>
 
 <style>
-/* persistent player styles */
+/* persistent player styles - floating overlay */
 .persistent-player-container {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1000;
     background: var(--bg-card);
-    border-top: 2px solid var(--primary);
-    box-shadow: 0 -5px 20px var(--shadow);
-    padding: 15px 40px;
+    border: 2px solid var(--primary);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    padding: 15px 30px;
+    max-width: 800px;
+    width: calc(100% - 40px);
+    backdrop-filter: blur(10px);
+    background: rgba(var(--bg-card-rgb, 249, 249, 249), 0.95);
+}
+
+body.dark-mode .persistent-player-container {
+    background: rgba(30, 30, 30, 0.95);
 }
 
 .persistent-player-bar {
-    max-width: 1200px;
-    margin: 0 auto;
     display: flex;
     align-items: center;
     gap: 15px;

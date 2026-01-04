@@ -141,18 +141,18 @@ class MusicController extends Controller {
         $comments = $commentModel->getAllForMusic($musicId);
         $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : '';
 
-        // Render View
+        // Render fullscreen visualization (no layout)
         $this->render('music/show', [
             'music' => $music,
             'comments' => $comments,
             'avgRating' => $avgRating,
             'openDrawer' => $openDrawer,
             'isUserLoggedIn' => $userId ? true : false
-        ]);
+        ], false);
     }
 
-    public function visualize() {
-        // fullscreen visualization with 3D player
+    public function details() {
+        // music details page with comments and info
         if (!isset($_GET['id'])) die("ID manquant");
         $musicId = (int)$_GET['id'];
 
@@ -164,7 +164,7 @@ class MusicController extends Controller {
         $musicModel = new Music($pdo);
         $commentModel = new Comment($pdo);
 
-        // handle POST actions (comments & ratings from visualize page)
+        // handle POST actions (comments & ratings)
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $userId) {
             // comments
             if (isset($_POST['comment'])) {
@@ -172,7 +172,7 @@ class MusicController extends Controller {
                 $timestamp = (int)($_POST['timestamp'] ?? 0);
                 if (!empty($content)) {
                     $commentModel->create($userId, $musicId, $content, $timestamp);
-                    $this->redirect("/music/visualize?id=$musicId&drawer=open");
+                    $this->redirect("/music/details?id=$musicId");
                 }
             }
             // ratings
@@ -180,7 +180,7 @@ class MusicController extends Controller {
                 $val = (int)$_POST['rating'];
                 if ($val >= 1 && $val <= 5) {
                     $musicModel->addRating($userId, $musicId, $val);
-                    $this->redirect("/music/visualize?id=$musicId");
+                    $this->redirect("/music/details?id=$musicId");
                 }
             }
         }
@@ -191,15 +191,13 @@ class MusicController extends Controller {
 
         $avgRating = $musicModel->getAvgRating($musicId);
         $comments = $commentModel->getAllForMusic($musicId);
-        $openDrawer = (isset($_GET['drawer']) && $_GET['drawer'] === 'open') ? 'open' : '';
 
-        // render without layout (layout = false)
-        $this->render('music/visualize', [
+        // render details page with layout
+        $this->render('music/details', [
             'music' => $music,
             'comments' => $comments,
             'avgRating' => $avgRating,
-            'openDrawer' => $openDrawer,
             'isUserLoggedIn' => $userId ? true : false
-        ], false);
+        ]);
     }
 }
