@@ -3,7 +3,7 @@ ob_start();
 ?>
     <div class="hero">
         <h1>404</h1>
-        <a class="btn btn-primary">Retour à l'accueil</a>
+        <a href='/' class="btn btn-primary">Retour à l'accueil</a>
     </div>
 
 
