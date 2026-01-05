@@ -6,12 +6,12 @@
         
         <div class="top-bar" style="display:flex; justify-content:space-between; align-items:center;">
              <div>
-                 <a href="/" class="btn btn-secondary" style="border-radius:50px; padding:8px 20px; background:var(--bg-card); color:var(--text-main);">
+                 <a href="<?= $basePath ?>/" class="btn btn-secondary" style="border-radius:50px; padding:8px 20px; background:var(--bg-card); color:var(--text-main);">
                     <i class="fas fa-arrow-left"></i> Retour
                  </a>
              </div>
              <div style="text-align:right;">
-                <button id="themeToggle" class="theme-toggle" title="Changer de thème" style="background:var(--bg-card); pointer-events:auto;">
+                <button id="themeToggle" class="theme-toggle themeToggle" title="Mode sombre/clair" aria-label="Toggle Dark Mode">
                     <i class="fas fa-moon"></i>
                 </button>
              </div>
@@ -100,7 +100,7 @@
                 <button type="submit" class="btn btn-primary" style="padding:10px 15px;">OK</button>
             </form>
             <?php else: ?>
-                <a href="/login" style="color:var(--primary); font-weight:bold;">Connectez-vous pour commenter</a>
+                <a href="<?= $basePath ?>/login" style="color:var(--primary); font-weight:bold;">Connectez-vous pour commenter</a>
             <?php endif; ?>
         </div>
     </div>
@@ -109,11 +109,10 @@
         <input type="hidden" name="rating" id="ratingInput">
     </form>
     
-    <audio id="audio" src="/music/stream?id=<?= $music['id']; ?>" crossorigin="anonymous"></audio>
+    <audio id="audio" src="<?= $basePath ?>/music/stream?id=<?= $music['id']; ?>" crossorigin="anonymous"></audio>
 
-<script>
+    <script>
         const commentsData = <?= json_encode($comments); ?>;
-        window.isUserLoggedIn = <?= $isUserLoggedIn ? 'true' : 'false'; ?>;
     </script>
 
     <script type="module" src="<?= $basePath ?>/assets/player.js"></script>

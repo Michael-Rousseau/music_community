@@ -6,7 +6,6 @@ use App\Models\Music;
 use App\Models\Comment;
 
 class MusicController extends Controller {
-
     // music stream
     public function stream() {
         if (!isset($_GET['id'])) {
@@ -123,13 +122,17 @@ class MusicController extends Controller {
         $commentModel = new Comment($pdo);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $userId) {
-            // handle comment
+            if(!$userId){
+                $this->redirect("$this->basePath/login");
+                return;
+            }
+            // Handle Comment
             if (isset($_POST['comment'])) {
                 $content = trim($_POST['comment']);
                 $timestamp = (int)($_POST['timestamp'] ?? 0);
                 if (!empty($content)) {
                     $commentModel->create($userId, $musicId, $content, $timestamp);
-                    $this->redirect("/music?id=$musicId&drawer=open");
+                    $this->redirect("$this->basePath/music?id=$musicId&drawer=open");
                 }
             }
             // handle rating
@@ -137,7 +140,7 @@ class MusicController extends Controller {
                 $val = (int)$_POST['rating'];
                 if ($val >= 1 && $val <= 5) {
                     $musicModel->addRating($userId, $musicId, $val);
-                    $this->redirect("/music?id=$musicId");
+                    $this->redirect("$this->basePath/music?id=$musicId");
                 }
             }
         }
@@ -154,7 +157,7 @@ class MusicController extends Controller {
         $this->render('music/show', [
             'music' => $music,
             'comments' => $comments,
-            'avgRating' => $avgRating,
+            'ratingForm' => $avgRating,
             'openDrawer' => $openDrawer,
             'isUserLoggedIn' => $userId ? true : false
         ]);

@@ -3,7 +3,7 @@
         <img src="<?= $basePath ?>/assets/images/logo_tempo.png" alt="Tempo Logo" width="150" height="50">
     </a>
     <div style="display:flex; align-items:center;">
-        <button id="themeToggle" class="theme-toggle" title="Mode sombre/clair" aria-label="Toggle Dark Mode">
+        <button id="themeToggle" class="theme-toggle themeToggle" title="Mode sombre/clair" aria-label="Toggle Dark Mode">
             <i class="fas fa-moon"></i>
         </button>
 
