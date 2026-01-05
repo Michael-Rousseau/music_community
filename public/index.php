@@ -10,6 +10,7 @@ use App\Controllers\AdminController;
 session_start();
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
 $basePath = ''; 
 if (strpos($uri, $basePath) === 0) {
     $uri = substr($uri, strlen($basePath));
@@ -59,7 +60,6 @@ switch ($uri) {
     case '/dashboard/delete':
         (new DashboardController())->delete();
         break;
-
         // Admin
     case '/admin':
         (new AdminController())->index();
@@ -70,6 +70,7 @@ switch ($uri) {
 
     default:
         http_response_code(404);
-        echo "404 Not Found";
+        (new HomeController())->page404();
+        
         break;
 }
