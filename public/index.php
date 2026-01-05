@@ -65,8 +65,8 @@ switch ($uri) {
         (new AdminController())->index();
         break;
 
-    case '/phpMyAdmin':
-        break;
+    /* case '/phpMyAdmin': */
+    /*     break; */
 
     default:
         http_response_code(404);
