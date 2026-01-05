@@ -28,4 +28,11 @@ class HomeController extends Controller {
             'totalPages' => $totalPages
         ]);
     }
+
+    public function page404() {
+
+        $this->render('general/404');
+    }
+
+
 }
