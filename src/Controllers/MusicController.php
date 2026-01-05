@@ -147,7 +147,9 @@ class MusicController extends Controller {
 
         // fetch data for view
         $music = $musicModel->findById($musicId);
-        if (!$music) die("Musique introuvable");
+        if (!$music) {
+            $this->redirect("$this->basePath/404");
+        }
 
         $avgRating = $musicModel->getAvgRating($musicId);
         $comments = $commentModel->getAllForMusic($musicId);
