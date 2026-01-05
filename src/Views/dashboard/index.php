@@ -60,7 +60,7 @@ ob_start();
                 <div class="card-body">
                     <h2 style="font-size: 1.3rem; margin-bottom:20px; color:var(--text-main);">Ajouter une musique</h2>
                     
-                    <form action="/dashboard" method="POST" enctype="multipart/form-data">
+                    <form action="<?=  $basePath ?>/dashboard" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="upload">
                         
                         <label>Titre</label>
@@ -104,7 +104,7 @@ ob_start();
                             </div>
                             
                             <div class="actions">
-                                <a href="/dashboard/edit?id=<?= $music['id']; ?>" class="btn-icon" title="Modifier">
+                                <a href="<?= $basePath ?>/dashboard/edit?id=<?= $music['id']; ?>" class="btn-icon" title="Modifier">
                                     <i class="fas fa-pen"></i>
                                 </a>
                                 <a href="/dashboard/delete?id=<?= $music['id']; ?>" class="btn-icon" style="color:#dc3545;" title="Supprimer" onclick="return confirm('Êtes-vous sûr ?');">

@@ -2,13 +2,7 @@
 ob_start();
 ?>
     <style>
-        body { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            background: var(--bg-body); 
-        }
+
         form { 
             background: var(--bg-card); 
             padding: 30px; 
@@ -29,7 +23,7 @@ ob_start();
             box-sizing: border-box;
         }
     </style>
-    <form method="POST">
+    <form method="POST" class="auth-container">
         <h2 style="margin-top:0; text-align:center;">Modifier la musique</h2>
         
         <label>Titre</label>
@@ -46,10 +40,10 @@ ob_start();
         
         <button type="submit" class="btn btn-primary" style="width:100%;">Sauvegarder</button>
         <p style="text-align:center; margin-top:15px;">
-            <a href="/dashboard" style="color:var(--text-muted);">Annuler</a>
+            <a href="<?= $basePath ?>/dashboard" style="color:var(--text-muted);">Annuler</a>
         </p>
     </form>
-    <script src="/assets/js/tempo.js"></script>
+    
 <?php
 $content = ob_get_clean();
 $title = "Modifier une musique";

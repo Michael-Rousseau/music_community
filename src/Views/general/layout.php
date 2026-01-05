@@ -68,34 +68,7 @@
 
     <main class="wrapper">
         <?= $content ?? '' ?>
-    </main>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const toggleBtn = document.getElementById("themeToggle");
-  const body = document.body;
-  const icon = toggleBtn ? toggleBtn.querySelector("i") : null;
-
-  if (localStorage.getItem("theme") === "dark") {
-    body.classList.add("dark-mode");
-    if (icon) { icon.classList.replace("fa-moon", "fa-sun"); }
-  }
-
-  if (toggleBtn) {
-    toggleBtn.addEventListener("click", () => {
-      body.classList.toggle("dark-mode");
-      if (body.classList.contains("dark-mode")) {
-        localStorage.setItem("theme", "dark");
-        if (icon) { icon.classList.replace("fa-moon", "fa-sun"); }
-      } else {
-        localStorage.setItem("theme", "light");
-        if (icon) { icon.classList.replace("fa-sun", "fa-moon"); }
-      }
-    });
-  }
-});
-</script>
+    </main><script src="<?= $basePath ?>/assets/js/tempo.js" defer></script>
 
 </body>
 </html>
