@@ -1,6 +1,7 @@
 RewriteEngine On
 
-RewriteRule ^phpmyadmin(/.*)?$ - [L,NC]
+RewriteCond %{REQUEST_URI} !^/music_community/phpMyAdmin(/|$)
+
 RewriteCond %{HTTP:Authorization} .
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 RewriteCond %{REQUEST_FILENAME} !-d
