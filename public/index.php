@@ -65,6 +65,9 @@ switch ($uri) {
         (new AdminController())->index();
         break;
 
+    case '/phpMyAdmin':
+        break;
+
     default:
         http_response_code(404);
         echo "404 Not Found";
